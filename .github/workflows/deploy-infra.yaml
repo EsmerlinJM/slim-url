@@ -5,7 +5,7 @@ on:
     - main
     paths:
     - iac/**/*
-    - .github/workflows/deploy-infra.yml
+    - .github/workflows/deploy-infra.yaml
 
 defaults:
   run:
