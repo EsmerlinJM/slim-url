@@ -1,0 +1,41 @@
+Parameters:
+  GitHubOrgUser:
+    Description: Name of GitHub organization/user (case sensitive)
+    Type: String
+  RepositoryName:
+    Description: Name of GitHub repository (case sensitive)
+    Type: String
+  OIDCAudience:
+    Description: Audience supplied to configure-aws-credentials.
+    Default: "sts.amazonaws.com"
+    Type: String
+
+Resources:
+  Role:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Action: sts:AssumeRoleWithWebIdentity
+          Principal:
+            Federated:
+            - !Ref GithubOidc
+          Condition:
+            StringEquals:
+              token.actions.githubusercontent.com:aud: !Ref OIDCAudience
+            StringLike:
+              token.actions.githubusercontent.com:sub: !Sub repo:${GitHubOrgUser}/${RepositoryName}:*
+
+  GithubOidc:
+    Type: AWS::IAM::OIDCProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList:
+      - sts.amazonaws.com
+      ThumbprintList:
+      - ffffffffffffffffffffffffffffffffffffffff
+
+Outputs:
+  Role:
+    Value: !GetAtt Role.Arn

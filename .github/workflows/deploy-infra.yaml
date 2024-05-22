@@ -1,5 +1,6 @@
 name: Deploy Infrastructure
 on:
+  workflow_dispatch:
   push:
     branches:
     - main
@@ -11,14 +12,13 @@ defaults:
   run:
     working-directory: iac/
 
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
 
     - name: Checkout
@@ -27,7 +27,7 @@ jobs:
     - name: Configure AWS Credentials Action For GitHub Actions
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        aws-region: 'us-east-1'
+        aws-region: us-east-1
         role-to-assume: ${{ secrets.ARN_ROLE_ASUME }}
 
     - name: Setup Terraform
