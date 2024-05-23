@@ -88,7 +88,7 @@ function generateCode(): string {
 
     let code: string[] = [];
     for (let index = 0; index < length; index++) {
-        var randomIndex: number = Math.round(Math.random() * string.length);
+        let randomIndex: number = Math.round(Math.random() * string.length);
 
         code[index] = string[randomIndex];
     }

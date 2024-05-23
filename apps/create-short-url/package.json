@@ -2,8 +2,11 @@
   "name": "create-short-url",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "index.js",
   "scripts": {
+    "tsc": "tsc",
+    "build": "tsc && copyfiles package.json build/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
