@@ -8,6 +8,10 @@ on:
     - iac/**/*
     - .github/workflows/deploy-infra.yaml
 
+permissions:
+  id-token: write
+  contents: read
+
 defaults:
   run:
     working-directory: iac/
@@ -16,9 +20,6 @@ jobs:
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
     steps:
 
     - name: Checkout
@@ -28,7 +29,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-region: us-east-1
-        role-to-assume: ${{ secrets.ARN_ROLE_ASUME }}
+        role-to-assume: arn:aws:iam::692735942459:role/github-oidc-auth-Role-Oxq1CSQ5oqfU
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
