@@ -3,6 +3,9 @@ build
 # Infracost
 .infracost
 
+# Files for lambda
+*.zip 
+
 # Local .terraform directories
 **/.terraform/*
 iac/.terraform.lock.hcl
