@@ -34,6 +34,20 @@ resource "aws_api_gateway_stage" "live" {
   stage_name    = "${var.stage_name}"
 }
 
+resource "aws_api_gateway_usage_plan" "usage" {
+  name = "${var.rest_api_name}-usage-plan"
+
+  api_stages {
+    api_id = aws_api_gateway_deployment.url_shortener_api_deployment.id
+    stage = aws_api_gateway_stage.live.stage_name
+  }
+
+  throttle_settings {
+    burst_limit = 1000
+    rate_limit = 10000
+  }
+}
+
 module "post_url_method" {
   source               = "./modules/api-gateway"
   api_id               = aws_api_gateway_rest_api.url_shortener_api.id
