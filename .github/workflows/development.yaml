@@ -1,0 +1,75 @@
+name: Deploy Infrastructure for Development
+on:
+  pull_request:
+    branches:
+    - main
+    paths:
+    - iac/**/*
+    - .github/workflows/deployment.yaml
+    types: [opened, synchronize, reopened, labeled]
+
+permissions:
+  id-token: write
+  contents: read
+
+defaults:
+  run:
+    working-directory: iac/
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configure AWS Credentials Action For GitHub Actions
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: us-east-1
+        role-to-assume: ${{ secrets.ARN_ROLE_ASUME }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+
+    - name: Terraform Init
+      id: init
+      run: terraform init
+
+    - name: Terraform Format
+      id: fmt
+      run: terraform fmt
+
+    - name: Terraform Plan
+      id: plan
+      run: |
+        terraform plan -out=plan -input=false
+
+    - name: Add Plan Comment
+      id: comment
+      uses: actions/github-script@v6
+      env:
+        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const output = `#### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+          #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+          Show Plan
+
+          \`\`\`${process.env.PLAN}\`\`\`
+
+
+
+          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
+

@@ -9,7 +9,7 @@ build
 # Local .terraform directories
 **/.terraform/*
 iac/.terraform.lock.hcl
-
+.terraform
 # .tfstate files
 *.tfstate
 *.tfstate.*
