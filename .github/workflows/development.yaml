@@ -45,12 +45,33 @@ jobs:
     - name: Terraform Plan
       id: plan
       run: |
-        terraform plan -no-color 2>&1 | tee ${{ github.workspace }}/plan_output.txt
+        terraform plan -no-color
+      working-directory: ./terraform
+      continue-on-error: false
 
-    - name: Comment Terraform Plan on PR
-      uses: blinqas/tf-plan-pr-comment@v1
-      with:
-        output_file: ${{ github.workspace }}/plan_output.txt
+    - name: Add Plan Comment
+      id: comment
+      uses: actions/github-script@v6
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const output = `#### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+          #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+          Show Plan
+
+          \`\`\`${process.env.PLAN}\`\`\`
+
+
+
+          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          })
 
