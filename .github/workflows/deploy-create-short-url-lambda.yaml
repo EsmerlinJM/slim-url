@@ -5,7 +5,7 @@ on:
     - main
     paths:
     - apps/create-short-url/**/*
-    - .github/workflows/deploy-create-short-url-lambda.yml
+    - .github/workflows/deploy-create-short-url-lambda.yaml
 
 defaults:
   run:
