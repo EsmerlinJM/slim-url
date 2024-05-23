@@ -39,24 +39,24 @@ export const handler = async(event: APIGatewayProxyEvent): Promise<APIGatewayPro
         };
     }
 
-    console.log('Processing request...', request);
-    
-    const client: DynamoDBClient = new DynamoDBClient({});
-    const documentClient: DynamoDBDocumentClient = DynamoDBDocumentClient.from(client)
-
-    const id = crypto.randomUUID();
-    const code = generateCode();
-
-    const command = new PutCommand({
-        TableName: tableName,
-        Item: {
-            ID: id,
-            Code: code,
-            URL: request.url
-        }
-    });
+    console.log('Processing request... ', request);
     
     try {
+        const client: DynamoDBClient = new DynamoDBClient({});
+        const documentClient: DynamoDBDocumentClient = DynamoDBDocumentClient.from(client)
+
+        const id = crypto.randomUUID();
+        const code = generateCode();
+
+        const command = new PutCommand({
+            TableName: tableName,
+            Item: {
+                ID: id,
+                Code: code,
+                URL: request.url
+            }
+        });
+
         await documentClient.send(command);
 
         const response: Response = {

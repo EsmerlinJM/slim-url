@@ -1,28 +1,24 @@
-name: Deploy Create Short URL Lambda
+name: Deploy Redirect Lambda
 on:
   push:
     branches:
     - main
     paths:
-    - apps/create-short-url/**/*
-    - .github/workflows/deploy-create-short-url-lambda.yaml
+    - apps/redirect/**/*
+    - .github/workflows/deploy-redirect-lambda.yaml
 
 defaults:
   run:
-    working-directory: apps/create-short-url/
-
-permissions:
-  id-token: write
-  contents: read
+    working-directory: apps/redirect/
 
 jobs:
   terraform:
-    name: 'Deploy Create Short URL Lambda'
+    name: 'Deploy Redirect Lambda'
     runs-on: ubuntu-latest
     steps:
-
+    # Checkout the repository to the GitHub Actions runner
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
 
     - name: Setup NodeJS
       uses: actions/setup-node@v4
@@ -45,4 +41,4 @@ jobs:
       run: cd build && zip -r ../main.zip .
 
     - name: Update Lambda code
-      run: aws lambda update-function-code --function-name=create-short-url --zip-file=fileb://main.zip
+      run: aws lambda update-function-code --function-name=redirect --zip-file=fileb://main.zip

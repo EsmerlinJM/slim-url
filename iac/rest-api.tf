@@ -1,6 +1,6 @@
 # API Gateway
 resource "aws_api_gateway_rest_api" "url_shortener_api" {
-  name = "slim-url-shortener-api"
+  name = "${var.rest_api_name}"
 }
 
 resource "aws_api_gateway_deployment" "url_shortener_api_deployment" {
@@ -31,7 +31,7 @@ resource "aws_api_gateway_resource" "redirect_resource" {
 resource "aws_api_gateway_stage" "live" {
   deployment_id = aws_api_gateway_deployment.url_shortener_api_deployment.id
   rest_api_id   = aws_api_gateway_rest_api.url_shortener_api.id
-  stage_name    = "live"
+  stage_name    = "${var.stage_name}"
 }
 
 module "post_url_method" {
