@@ -11,6 +11,10 @@ defaults:
   run:
     working-directory: apps/create-short-url/
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   terraform:
     name: 'Deploy Create Short URL Lambda'
