@@ -45,33 +45,12 @@ jobs:
     - name: Terraform Plan
       id: plan
       run: |
-        terraform plan -no-color
-      working-directory: ./terraform
-      continue-on-error: false
+        terraform plan -out=plan -input=false
 
-    - name: Add Plan Comment
-      id: comment
-      uses: actions/github-script@v6
-      env:
-        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+    - name: Post Plan to GitHub PR
+      uses: mshick/add-pr-comment@v1
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const output = `#### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-          #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
-
-          Show Plan
-
-          \`\`\`${process.env.PLAN}\`\`\`
-
-
-
-          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Workflow: \`${{ github.workflow }}\`*`;
-
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: output
-          })
-
+        allow-repeats: true
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        repo-token-user-login: 'github-actions[bot]'
+        message: "## plan\n```\n${{ steps.plan.outputs.stdout || steps.plan.outputs.stderr }}\n```   \n#magic___^_^___line\n"
