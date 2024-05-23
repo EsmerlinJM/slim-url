@@ -42,12 +42,12 @@ jobs:
       id: fmt
       run: terraform fmt
 
-    - name: Auto Commit Changes
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        commit_message: "Terraform fmt"
-        file_pattern: "*.tf"
-        commit_user_name: "github-actions[bot]"
+    # - name: Auto Commit Changes
+    #   uses: stefanzweifel/git-auto-commit-action@v5
+    #   with:
+    #     commit_message: "Terraform fmt"
+    #     file_pattern: "*.tf"
+    #     commit_user_name: "github-actions[bot]"
 
     - name: Terraform Plan
       id: plan

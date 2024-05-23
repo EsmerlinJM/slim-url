@@ -11,6 +11,10 @@ defaults:
   run:
     working-directory: apps/redirect/
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   terraform:
     name: 'Deploy Redirect Lambda'
@@ -18,7 +22,7 @@ jobs:
     steps:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Setup NodeJS
       uses: actions/setup-node@v4
