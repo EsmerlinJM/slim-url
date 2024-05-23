@@ -18,6 +18,8 @@ data "aws_iam_policy_document" "allow_get_url_lambda" {
 
     actions = [
       "dynamodb:GetItem",
+      "dynamodb:Query",
+      "dax:Query"
     ]
 
     resources = [
