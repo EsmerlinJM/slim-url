@@ -54,33 +54,6 @@ jobs:
       run: |
         terraform plan -out=plan -input=false
 
-      # Add a comment to pull requests with plan results
-    - name: Add Plan Comment
-      id: comment
-      uses: actions/github-script@v6
-      env:
-        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const output = `#### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-          #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
-
-          Show Plan
-
-          \`\`\`${process.env.PLAN}\`\`\`
-
-
-
-          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Workflow: \`${{ github.workflow }}\`*`;
-
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: output
-          })
-
     - name: Terraform Apply
       run: terraform apply -auto-approve -input=false plan
 
