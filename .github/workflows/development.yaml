@@ -45,11 +45,12 @@ jobs:
     - name: Terraform Plan
       id: plan
       run: |
-        terraform plan -out=plan -input=false
+        terraform plan -no-color 2>&1 | tee ${{ github.workspace }}/plan_output.txt
 
-    - name: Post PR comment
-      uses: borchero/terraform-plan-comment@v1
+    - name: Comment Terraform Plan on PR
+      uses: blinqas/tf-plan-pr-comment@v1
       with:
-        token: ${{ github.token }}
-        planfile: .plan
+        output_file: ${{ github.workspace }}/plan_output.txt
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
