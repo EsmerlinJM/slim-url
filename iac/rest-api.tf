@@ -38,7 +38,7 @@ resource "aws_api_gateway_usage_plan" "usage" {
   name = "${var.rest_api_name}-usage-plan"
 
   api_stages {
-    api_id = aws_api_gateway_deployment.url_shortener_api_deployment.id
+    api_id = aws_api_gateway_rest_api.url_shortener_api.id
     stage = aws_api_gateway_stage.live.stage_name
   }
 
