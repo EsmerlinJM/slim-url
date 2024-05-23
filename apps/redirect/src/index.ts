@@ -1,5 +1,5 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, GetCommand, GetCommandOutput } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, QueryCommand, QueryCommandOutput } from '@aws-sdk/lib-dynamodb';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 const tableName: string = 'urls';
@@ -23,16 +23,18 @@ export const handler = async(event: APIGatewayProxyEvent): Promise<APIGatewayPro
         const client: DynamoDBClient = new DynamoDBClient({});
         const documentClient: DynamoDBDocumentClient = DynamoDBDocumentClient.from(client)
 
-        const command = new GetCommand({
+        const command = new QueryCommand({
             TableName: tableName,
-            Key: {
-                Code: redirectCode
-            }
+            IndexName: 'CodeIndex',
+            KeyConditionExpression: 'Code = :code',
+            ExpressionAttributeValues: {
+                ':code': redirectCode,
+            },
         });
 
-        const response: GetCommandOutput= await documentClient.send(command);
+        const response: QueryCommandOutput = await documentClient.send(command);
 
-        if (!response || response.Item?.length <= 0) {
+        if (!response || !response.Items?.length) {
             return {
                 statusCode: 404,
                 body: JSON.stringify({
@@ -41,7 +43,7 @@ export const handler = async(event: APIGatewayProxyEvent): Promise<APIGatewayPro
             };
         }
         
-        const url: string = response.Item?.URL;
+        const url: string = response.Items[0]?.URL;
 
         console.log('Redirecting code %s to URL %s', redirectCode, url);
 
