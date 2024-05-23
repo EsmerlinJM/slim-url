@@ -29,7 +29,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-region: us-east-1
-        role-to-assume: arn:aws:iam::692735942459:role/github-oidc-auth-Role-Oxq1CSQ5oqfU
+        role-to-assume: ${{ secrets.ARN_ROLE_ASUME }}
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
@@ -40,7 +40,14 @@ jobs:
 
     - name: Terraform Format
       id: fmt
-      run: terraform fmt -check
+      run: terraform fmt
+
+    - name: Auto Commit Changes
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "Terraform fmt"
+        file_pattern: "*.tf"
+        commit_user_name: "github-actions[bot]"
 
     - name: Terraform Plan
       id: plan
