@@ -8,7 +8,7 @@ const redirectCodeParameter: string = 'redirectCode';
 export const handler = async(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const redirectCode: string | undefined = event.pathParameters?.[redirectCodeParameter];
 
-    if (event.pathParameters || !redirectCode) {
+    if (!event.pathParameters || !redirectCode) {
         return {
             statusCode: 400,
             body: JSON.stringify({
