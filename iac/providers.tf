@@ -5,7 +5,7 @@ terraform {
       version = "~> 5.0"
     }
   }
-  
+
   backend "s3" {
     bucket = "slim-url-terraform-state-bucket-19283719"
     key    = "slim-url/state"
