@@ -7,7 +7,7 @@ module "create_short_url_lambda" {
   ]
 
   environment_variables = {
-    BASE_URL = "https://yr9q6b5bjc.execute-api.us-east-1.amazonaws.com/live"
+    BASE_URL = "https://yr9q6b5bjc.execute-api.us-east-1.amazonaws.com/live/"
   }
 }
 
