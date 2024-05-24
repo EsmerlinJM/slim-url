@@ -89,18 +89,23 @@ jobs:
     - name: Terraform Apply
       run: terraform apply -auto-approve -input=false
 
+    - name: Declare some variables
+      shell: bash
+      run: |
+        echo "sha=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
+
   deploy_create_short_url_lambda:
     needs: terraform
     uses: ./.github/workflows/deploy-create-short-url-lambda.yaml
     secrets: inherit
     with:
-      lambda_name: create-short-url-${{ github.sha }}
+      lambda_name: create-short-url-${{ env.sha_short }}
 
   deploy_redirect_lambda:
     needs: terraform
     uses: ./.github/workflows/deploy-redirect-lambda.yaml
     secrets: inherit
     with:
-      lambda_name: redirect-${{ github.sha }}
+      lambda_name: redirect-${{ env.sha_short }}
 
 
