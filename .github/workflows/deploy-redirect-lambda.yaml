@@ -50,5 +50,9 @@ jobs:
     - name: Zip build
       run: cd build && zip -r ../main.zip .
 
-    - name: Update Lambda code
-      run: aws lambda update-function-code --function-name=${{ inputs.lambda_name || 'redirect'  }} --zip-file=fileb://main.zip
+    - name: Update or Create Lambda code
+      run: |
+        if ${{ inputs.lambda_name == '' && github.event_name == 'workflow_dispatch' }}
+          aws lambda update-function-code --function-name=redirect --zip-file=fileb://main.zip
+        else
+          aws lambda create-function --function-name=${{ inputs.lambda_name  }} --zip-file=fileb://main.zip

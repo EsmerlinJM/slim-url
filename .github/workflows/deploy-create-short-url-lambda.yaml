@@ -51,4 +51,8 @@ jobs:
       run: cd build && zip -r ../main.zip .
 
     - name: Update Lambda code
-      run: aws lambda update-function-code --function-name=${{ inputs.lambda_name || 'create-short-url'  }} --zip-file=fileb://main.zip
+      run: |
+        if ${{ inputs.lambda_name == '' && github.event_name == 'workflow_dispatch' }}
+          aws lambda update-function-code --function-name=create-short-url --zip-file=fileb://main.zip
+        else
+          aws lambda create-function --function-name=${{ inputs.lambda_name  }} --zip-file=fileb://main.zip
