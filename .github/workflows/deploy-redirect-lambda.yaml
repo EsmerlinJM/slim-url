@@ -56,5 +56,5 @@ jobs:
         then
           aws lambda update-function-code --function-name=redirect --zip-file=fileb://main.zip
         else
-          aws lambda create-function --function-name="${{ inputs.lambda_name }}" --zip-file=fileb://main.zip
+          aws lambda create-function --function-name=${{ inputs.lambda_name }} --zip-file=fileb://main.zip
         fi
