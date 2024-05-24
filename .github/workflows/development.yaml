@@ -12,7 +12,7 @@ on:
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
   pull-requests: write
 
 jobs:
@@ -22,6 +22,10 @@ jobs:
     defaults:
       run:
         working-directory: iac/
+
+    outputs:
+      short_sha: ${{ steps.shorten_sha.outputs.short_sha }}
+
     steps:
 
     - name: Checkout
@@ -44,17 +48,31 @@ jobs:
       id: fmt
       run: terraform fmt
 
+    - name: Auto Commit Changes
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "Terraform fmt"
+        file_pattern: "*.tf"
+        commit_user_name: "github-actions[bot]"
+
     - name: Terraform validate
       id: validate
       run: terraform validate
 
+    - name: Shorten commit SHA
+      id: shorten_sha
+      run: echo "short_sha=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
     - name: Terraform Plan
       id: plan
+      env:
+        TF_VAR_lambda_prefix_name: ${{ steps.shorten_sha.outputs.short_sha }}
       run: |
         terraform plan -input=false -no-color
       continue-on-error: true
 
     - uses: actions/github-script@v7
+      name: "Terraform Plan Comment"
       if: github.event_name == 'pull_request'
       env:
         PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
@@ -87,25 +105,22 @@ jobs:
       run: exit 1
 
     - name: Terraform Apply
+      env:
+        TF_VAR_lambda_prefix_name: ${{ steps.shorten_sha.outputs.short_sha }}
       run: terraform apply -auto-approve -input=false
-
-    - name: Declare some variables
-      shell: bash
-      run: |
-        echo "sha=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
 
   deploy_create_short_url_lambda:
     needs: terraform
     uses: ./.github/workflows/deploy-create-short-url-lambda.yaml
     secrets: inherit
     with:
-      lambda_name: create-short-url-${{ github.sha }}
+      lambda_name: create-short-url-${{ needs.terraform.outputs.short_sha }}
 
   deploy_redirect_lambda:
     needs: terraform
     uses: ./.github/workflows/deploy-redirect-lambda.yaml
     secrets: inherit
     with:
-      lambda_name: redirect-${{ github.sha }}
+      lambda_name: redirect-${{ needs.terraform.outputs.short_sha }}
 
 

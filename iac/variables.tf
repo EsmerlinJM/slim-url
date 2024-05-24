@@ -14,8 +14,8 @@ variable "stage_name" {
   default     = "live"
 }
 
-variable "lambda_name" {
-  description = "The name of your lambda"
+variable "lambda_prefix_name" {
+  description = "The prefix name of your lambda"
   type        = string
-  default     = "lambda"
+  default     = "-lambda"
 }
