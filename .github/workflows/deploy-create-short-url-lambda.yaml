@@ -23,6 +23,7 @@ permissions:
 
 jobs:
   deploy_lambda:
+    environment: 'staging'
     name: 'Deploy Create Short URL Lambda'
     runs-on: ubuntu-latest
     steps:

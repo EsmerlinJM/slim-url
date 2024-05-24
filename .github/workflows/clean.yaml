@@ -37,11 +37,11 @@ jobs:
       uses: hashicorp/setup-terraform@v3
 
     - name: Terraform Init
-      id: init
+      id: destroy
       run: terraform destroy -auto-approve
 
     - name: Deleting lambdas functions
-      id: init
+      id: delete_lambda
       run: |
         aws lambda delete-function --function-name redirect-${{ github.sha }} &&  aws lambda delete-function --function-name create-short-url-${{ github.sha }}
 
