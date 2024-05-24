@@ -33,4 +33,18 @@ data "aws_iam_policy_document" "policies" {
 
     resources = ["arn:aws:logs:*:*:*"]
   }
+
+  statement {
+    effect = "Allow"
+    sid    = "VPCPermissions"
+    actions = [
+      "ec2:DescribeNetworkInterfaces",
+      "ec2:CreateNetworkInterface",
+      "ec2:DeleteNetworkInterface",
+      "ec2:DescribeInstances",
+      "ec2:AttachNetworkInterface"
+    ]
+
+    resources = ["*"]
+  }
 }
