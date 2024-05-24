@@ -1,5 +1,6 @@
 name: Deploy Redirect Lambda
 on:
+  workflow_call:
   push:
     branches:
     - main
@@ -16,7 +17,7 @@ permissions:
   contents: read
 
 jobs:
-  terraform:
+  deploy_lambda:
     name: 'Deploy Redirect Lambda'
     runs-on: ubuntu-latest
     steps:
