@@ -25,6 +25,7 @@ jobs:
 
     outputs:
       short_sha: ${{ steps.shorten_sha.outputs.short_sha }}
+
     steps:
 
     - name: Checkout
@@ -60,9 +61,7 @@ jobs:
 
     - name: Shorten commit SHA
       id: shorten_sha
-      run: "echo \"short_sha=$(git rev-parse --short HEAD)\" >> $GITHUB_ENV \necho \"short_sha=${{ env.short_sha }}\" >> $GITHUB_OUTPUT\n"
-      env:
-        short_sha: ${{ steps.shorten_sha.outputs.short_sha }}
+      run: echo "short_sha=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
     - name: Terraform Plan
       id: plan
