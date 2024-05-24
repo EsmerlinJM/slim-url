@@ -7,7 +7,7 @@ module "create_short_url_lambda" {
   ]
 
   environment_variables = {
-    BASE_URL = ""
+    BASE_URL = "https://yr9q6b5bjc.execute-api.us-east-1.amazonaws.com/live/"
   }
 }
 
@@ -18,14 +18,4 @@ module "redirect_lambda" {
   policies = [
     data.aws_iam_policy_document.allow_get_url_lambda.json
   ]
-
-   environment_variables = {
-    DAX_ENDPOINT = aws_dax_cluster.urls.cluster_address
-  }
-
-  has_vpc            = true
-  security_group_ids = [data.aws_security_group.default_security_group.id]
-  subnet_ids         = data.aws_subnets.default_vpc.ids
-
-  depends_on = [aws_dax_cluster.urls]
 }

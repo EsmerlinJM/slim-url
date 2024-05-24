@@ -1,7 +1,3 @@
-locals {
-  codeIndex = "${var.code_index}"
-}
-
 resource "aws_dynamodb_table" "urls" {
   name           = "urls"
   billing_mode   = "PROVISIONED"
@@ -26,7 +22,7 @@ resource "aws_dynamodb_table" "urls" {
   }
 
   global_secondary_index {
-    name            = local.codeIndex
+    name            = "CodeIndex"
     hash_key        = "Code"
     range_key       = "URL"
     projection_type = "ALL"

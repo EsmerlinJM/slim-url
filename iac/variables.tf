@@ -13,9 +13,3 @@ variable "stage_name" {
   type        = string
   default     = "live"
 }
-
-variable "code_index" {
-  description = "Secundary index for DynamoDB"
-  type        = string
-  default     = "CodeIndex"
-}
