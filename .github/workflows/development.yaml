@@ -13,6 +13,7 @@ on:
 permissions:
   id-token: write
   contents: read
+  pull-requests: write
 
 jobs:
   terraform:
@@ -50,7 +51,7 @@ jobs:
     - name: Terraform Plan
       id: plan
       run: |
-        terraform plan -out=plan -input=false
+        terraform plan -out=plan -input=false --no-color
       continue-on-error: true
 
     - uses: actions/github-script@v6
