@@ -12,7 +12,7 @@ on:
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
   pull-requests: write
 
 jobs:
@@ -45,6 +45,13 @@ jobs:
     - name: Terraform Format
       id: fmt
       run: terraform fmt
+
+    - name: Auto Commit Changes
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "Terraform fmt"
+        file_pattern: "*.tf"
+        commit_user_name: "github-actions[bot]"
 
     - name: Terraform validate
       id: validate

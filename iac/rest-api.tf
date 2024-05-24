@@ -1,6 +1,6 @@
 # API Gateway
 resource "aws_api_gateway_rest_api" "url_shortener_api" {
-  name = "${var.rest_api_name}"
+  name = var.rest_api_name
 }
 
 resource "aws_api_gateway_deployment" "url_shortener_api_deployment" {
@@ -31,7 +31,7 @@ resource "aws_api_gateway_resource" "redirect_resource" {
 resource "aws_api_gateway_stage" "live" {
   deployment_id = aws_api_gateway_deployment.url_shortener_api_deployment.id
   rest_api_id   = aws_api_gateway_rest_api.url_shortener_api.id
-  stage_name    = "${var.stage_name}"
+  stage_name    = var.stage_name
 }
 
 resource "aws_api_gateway_usage_plan" "usage" {
@@ -39,12 +39,12 @@ resource "aws_api_gateway_usage_plan" "usage" {
 
   api_stages {
     api_id = aws_api_gateway_rest_api.url_shortener_api.id
-    stage = aws_api_gateway_stage.live.stage_name
+    stage  = aws_api_gateway_stage.live.stage_name
   }
 
   throttle_settings {
     burst_limit = 1000
-    rate_limit = 10000
+    rate_limit  = 10000
   }
 }
 
