@@ -56,5 +56,6 @@ jobs:
         then
           aws lambda update-function-code --function-name=redirect --zip-file=fileb://main.zip
         else
-          aws lambda create-function --function-name=${{ inputs.lambda_name }} --zip-file=fileb://main.zip
+          ROLE_ARN=$(aws iam get-role --role-name redirect-lambda-role --query 'Role.Arn' --output text)
+          aws lambda create-function --region=${{ secrets.AWS_REGION || 'us-east-1' }} --role="$ROLE_ARN" --function-name=${{ inputs.lambda_name }} --zip-file=fileb://main.zip
         fi
