@@ -2,13 +2,14 @@ name: Deploy deployment enviroment with Infrastructure
 on:
   workflow_dispatch:
   pull_request:
+    types: [opened, synchronize, reopened, labeled]
+  push:
     branches:
     - main
     paths:
     - iac/**/*
     - .github/workflows/development.yaml
     - apps/**/*
-    types: [opened, synchronize, reopened, labeled]
 
 permissions:
   id-token: write
