@@ -6,6 +6,7 @@ on:
     paths:
     - iac/**/*
     - .github/workflows/development.yaml
+    - .github/workflows/clean.yaml
     - apps/**/*
     types: [closed]
 
