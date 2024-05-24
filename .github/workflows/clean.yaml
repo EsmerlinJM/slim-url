@@ -1,0 +1,47 @@
+name: Clean deployment enviroment with Infrastructure
+on:
+  pull_request:
+    branches:
+    - main
+    paths:
+    - iac/**/*
+    - .github/workflows/development.yaml
+    - apps/**/*
+    types: [closed]
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: iac/
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
+        role-to-assume: ${{ secrets.ARN_ROLE_ASUME }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+
+    - name: Terraform Init
+      id: init
+      run: terraform destroy -auto-approve
+
+    - name: Deleting lambdas functions
+      id: init
+      run: |
+        aws lambda delete-function --function-name redirect-${{ github.sha }} &&  aws lambda delete-function --function-name create-short-url-${{ github.sha }}
+
+
