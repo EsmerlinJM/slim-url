@@ -2,14 +2,13 @@ name: Deploy deployment enviroment with Infrastructure
 on:
   workflow_dispatch:
   pull_request:
-    types: [opened, synchronize, reopened, labeled]
-  push:
     branches:
     - main
     paths:
     - iac/**/*
     - .github/workflows/development.yaml
     - apps/**/*
+    types: [opened, synchronize, reopened, labeled]
 
 permissions:
   id-token: write
@@ -58,12 +57,13 @@ jobs:
 
     - name: Shorten commit SHA
       id: shorten_sha
-      run: echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      run: |
+        echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
     - name: Terraform Plan
       id: plan
       env:
-        TF_VAR_lambda_prefix_name: ${{ steps.shorten_sha.outputs.short_sha }}
+        TF_VAR_lambda_prefix_name: ${{ env.short_sha }}
       run: |
         terraform plan -input=false -no-color
       continue-on-error: true
@@ -108,13 +108,13 @@ jobs:
     uses: ./.github/workflows/deploy-create-short-url-lambda.yaml
     secrets: inherit
     with:
-      lambda_name: create-short-url-${{ needs.terraform.steps.shorten_sha.outputs.short_sha }}
+      lambda_name: create-short-url-${{ env.short_sha }}
 
   deploy_redirect_lambda:
     needs: terraform
     uses: ./.github/workflows/deploy-redirect-lambda.yaml
     secrets: inherit
     with:
-      lambda_name: redirect-${{ needs.terraform.steps.shorten_sha.outputs.short_sha }}
+      lambda_name: redirect-${{ env.short_sha }}
 
 
