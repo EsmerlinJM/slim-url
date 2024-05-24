@@ -50,9 +50,11 @@ jobs:
     - name: Zip build
       run: cd build && zip -r ../main.zip .
 
-    - name: Update Lambda code
+    - name: Update or Create Lambda code
       run: |
-        if ${{ inputs.lambda_name == '' }}
+        if [[ "${{ inputs.lambda_name }}" == '' ]]
+        then
           aws lambda update-function-code --function-name=create-short-url --zip-file=fileb://main.zip
         else
-          aws lambda create-function --function-name=${{ inputs.lambda_name  }} --zip-file=fileb://main.zip
+          aws lambda create-function --function-name="${{ inputs.lambda_name }}" --zip-file=fileb://main.zip
+        fi
