@@ -19,6 +19,8 @@ jobs:
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
+    env:
+      TF_VAR_lambda_prefix_name: ${{ github.sha }}
     defaults:
       run:
         working-directory: iac/
