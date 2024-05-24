@@ -90,9 +90,13 @@ jobs:
   deploy_create_short_url_lambda:
     uses: ./.github/workflows/deploy-create-short-url-lambda.yaml
     secrets: inherit
+    with:
+      lambda_name: create-short-url-${{ github.sha }}
 
   deploy_redirect_lambda:
     uses: ./.github/workflows/deploy-redirect-lambda.yaml
     secrets: inherit
+    with:
+      lambda_name: redirect-${{ github.sha }}
 
 

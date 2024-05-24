@@ -1,6 +1,11 @@
 name: Deploy Redirect Lambda
 on:
   workflow_call:
+    inputs:
+      lambda_name:
+        required: false
+        type: string
+        default: redirect
   push:
     branches:
     - main
@@ -46,4 +51,4 @@ jobs:
       run: cd build && zip -r ../main.zip .
 
     - name: Update Lambda code
-      run: aws lambda update-function-code --function-name=redirect --zip-file=fileb://main.zip
+      run: aws lambda update-function-code --function-name=${{ inputs.lambda_name || 'redirect'  }} --zip-file=fileb://main.zip
