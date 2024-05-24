@@ -23,6 +23,7 @@ permissions:
 
 jobs:
   deploy_lambda:
+    environment: 'staging'
     name: 'Deploy Redirect Lambda'
     runs-on: ubuntu-latest
     steps:

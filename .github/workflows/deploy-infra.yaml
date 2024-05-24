@@ -18,6 +18,7 @@ defaults:
 
 jobs:
   terraform:
+    environment: 'staging'
     name: 'Terraform'
     runs-on: ubuntu-latest
     steps:
