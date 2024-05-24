@@ -1,13 +1,9 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, QueryCommand, QueryCommandOutput } from '@aws-sdk/lib-dynamodb';
-import AmazonDaxClient from 'amazon-dax-client';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import AWS from 'aws-sdk';
 
 const tableName: string = 'urls';
 const redirectCodeParameter: string = 'redirectCode';
-
-const daxEndpoint: string = `dax://${process.env.DAX_ENDPOINT}`
 
 export const handler = async(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const redirectCode: string | undefined = event.pathParameters?.[redirectCodeParameter];
@@ -24,8 +20,8 @@ export const handler = async(event: APIGatewayProxyEvent): Promise<APIGatewayPro
     console.log('Processing request code... ', redirectCode);
 
     try {
-        const client: DynamoDBClient = new DynamoDBClient({endpoint: daxEndpoint});
-        const documentClient: DynamoDBDocumentClient = DynamoDBDocumentClient.from(client);
+        const client: DynamoDBClient = new DynamoDBClient({});
+        const documentClient: DynamoDBDocumentClient = DynamoDBDocumentClient.from(client)
 
         const command = new QueryCommand({
             TableName: tableName,
