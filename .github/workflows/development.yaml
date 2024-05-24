@@ -66,15 +66,16 @@ jobs:
     - name: Terraform Plan
       id: plan
       env:
-        TF_VAR_lambda_prefix_name: ${{ steps.shorten_sha.outputs.short_sha }}
+        TF_VAR_lambda_prefix_name: ${{ needs.terraform.outputs.short_sha }}
       run: |
-        terraform plan -input=false -no-color
+        terraform plan -input=false -no-color -out=plan
       continue-on-error: true
 
     - uses: actions/github-script@v7
+      name: "Terraform Plan Comment"
       if: github.event_name == 'pull_request'
       env:
-        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        PLAN: "plan\n${{ steps.plan.outputs.stdout }}"
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
