@@ -37,7 +37,7 @@ jobs:
 
     - name: Terraform Init
       id: init
-      run: terraform init -reconfigure -backend-config="bucket=${{ secrets.BUCKET_NAME }}" \ -backend-config="key=${{ secrets.KEY_STATE_NAME }}"
+      run: terraform init -reconfigure -backend-config="bucket=${{ secrets.BUCKET_NAME }}" -backend-config="key=${{ secrets.KEY_STATE_NAME }}"
 
     - name: Terraform Format
       id: fmt
@@ -88,12 +88,14 @@ jobs:
       run: terraform apply -auto-approve -input=false plan
 
   deploy_create_short_url_lambda:
+    needs: terraform
     uses: ./.github/workflows/deploy-create-short-url-lambda.yaml
     secrets: inherit
     with:
       lambda_name: create-short-url-${{ github.sha }}
 
   deploy_redirect_lambda:
+    needs: terraform
     uses: ./.github/workflows/deploy-redirect-lambda.yaml
     secrets: inherit
     with:
