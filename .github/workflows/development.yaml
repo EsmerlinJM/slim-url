@@ -60,8 +60,9 @@ jobs:
 
     - name: Shorten commit SHA
       id: shorten_sha
-      run: |
-        echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+      run: "echo \"short_sha=$(git rev-parse --short HEAD)\" >> $GITHUB_ENV \necho \"short_sha=${{ env.short_sha }}\" >> $GITHUB_OUTPUT\n"
+      env:
+        short_sha: ${{ steps.shorten_sha.outputs.short_sha }}
 
     - name: Terraform Plan
       id: plan
@@ -111,13 +112,13 @@ jobs:
     uses: ./.github/workflows/deploy-create-short-url-lambda.yaml
     secrets: inherit
     with:
-      lambda_name: create-short-url-${{ needs.terraform.steps.shorten_sha.outputs.short_sha }}
+      lambda_name: create-short-url-${{ needs.terraform.outputs.short_sha }}
 
   deploy_redirect_lambda:
     needs: terraform
     uses: ./.github/workflows/deploy-redirect-lambda.yaml
     secrets: inherit
     with:
-      lambda_name: redirect-${{ needs.terraform.steps.shorten_sha.outputs.short_sha }}
+      lambda_name: redirect-${{ needs.terraform.outputs.short_sha }}
 
 
