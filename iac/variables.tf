@@ -13,3 +13,9 @@ variable "stage_name" {
   type        = string
   default     = "live"
 }
+
+variable "lambda_name" {
+  description = "The name of your lambda"
+  type        = string
+  default     = "lambda"
+}

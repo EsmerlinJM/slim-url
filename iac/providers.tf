@@ -6,10 +6,7 @@ terraform {
     }
   }
 
-  backend "s3" {
-    bucket = "slim-url-terraform-state-bucket-19283719"
-    key    = "slim-url/state"
-  }
+  backend "s3" {}
 }
 
 # Configure the AWS Provider
