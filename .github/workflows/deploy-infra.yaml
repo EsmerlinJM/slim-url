@@ -1,12 +1,20 @@
 name: Deploy Infrastructure
 on:
-  workflow_dispatch:
+  workflow_run:
+    types:
+    - completed
+    workflows:
+    - Clean deployment enviroment with Infrastructure
+  pull_request:
+    types: [closed]
   push:
     branches:
     - main
     paths:
     - iac/**/*
     - .github/workflows/deploy-infra.yaml
+    - .github/workflows/development.yaml
+    - .github/workflows/clean.yaml
 
 permissions:
   id-token: write
@@ -21,6 +29,7 @@ jobs:
     environment: 'staging'
     name: 'Terraform'
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
     steps:
 
     - name: Checkout
@@ -52,9 +61,13 @@ jobs:
 
     - name: Terraform Plan
       id: plan
+      env:
+        TF_VAR_lambda_prefix_name: 'staging'
       run: |
         terraform plan -out=plan -input=false
 
     - name: Terraform Apply
+      env:
+        TF_VAR_lambda_prefix_name: 'staging'
       run: terraform apply -auto-approve -input=false plan
 
