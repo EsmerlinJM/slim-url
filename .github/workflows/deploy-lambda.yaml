@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   deploy_lambda:
-    environment: ${{ inputs.working_directory }}
+    environment: ${{ inputs.environment }}
     name: 'Deploy Lambda Function'
     runs-on: ubuntu-latest
     defaults:
