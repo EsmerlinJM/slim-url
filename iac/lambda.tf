@@ -22,7 +22,7 @@ module "redirect_lambda" {
 
 module "delete_lambda" {
   source           = "./modules/lambda"
-  name             = "delete-${var.lambda_prefix_name}"
+  name             = "delete-url-${var.lambda_prefix_name}"
   source_file_path = "./init/index.mjs"
   policies = [
     data.aws_iam_policy_document.allow_get_url_lambda.json
