@@ -1,20 +1,23 @@
-name: Deploy Delete URL Lambda
+name: Deploy Lambda Function
 on:
   workflow_call:
     inputs:
       lambda_name:
-        required: false
+        required: true
+        type: string
+      working_directory:
+        required: true
         type: string
   push:
     branches:
     - main
     paths:
-    - apps/delete-url/**/*
-    - .github/workflows/deploy-delete-url-lambda.yaml
+    - apps/**/*
+    - .github/workflows/deploy-lambda.yaml
 
 defaults:
   run:
-    working-directory: apps/delete-url/
+    working-directory: ${{ inputs.working_directory }}
 
 permissions:
   id-token: write
@@ -23,10 +26,10 @@ permissions:
 jobs:
   deploy_lambda:
     environment: 'staging'
-    name: 'Deploy Delete URL Lambda'
+    name: 'Deploy Lambda Function'
     runs-on: ubuntu-latest
     steps:
-    # Checkout the repository to the GitHub Actions runner
+
     - name: Checkout
       uses: actions/checkout@v4
 
@@ -51,4 +54,4 @@ jobs:
       run: cd build && zip -r ../main.zip .
 
     - name: Update Lambda code
-      run: aws lambda update-function-code --function-name=${{ inputs.lambda_name || 'delete-url' }} --zip-file=fileb://main.zip
+      run: aws lambda update-function-code --function-name=${{ inputs.lambda_name }} --zip-file=fileb://main.zip
