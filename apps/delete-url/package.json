@@ -1,0 +1,24 @@
+{
+  "name": "delete-url",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "build": "tsc && copyfiles package.json build/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.584.0",
+    "@aws-sdk/lib-dynamodb": "^3.584.0",
+    "typescript": "^5.4.5"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.138",
+    "@types/node": "^20.12.12",
+    "copyfiles": "^2.4.1"
+  }
+}

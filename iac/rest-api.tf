@@ -14,6 +14,8 @@ resource "aws_api_gateway_deployment" "url_shortener_api_deployment" {
       module.post_url_method.integration_id,
       module.redirect_url_method.id,
       module.redirect_url_method.integration_id,
+      module.delete_url_method.id,
+      module.delete_url_method.integration_id,
     ]))
   }
 
@@ -67,5 +69,16 @@ module "redirect_url_method" {
   resource_path        = aws_api_gateway_resource.redirect_resource.path
   integration_uri      = module.redirect_lambda.invoke_arn
   lambda_function_name = module.redirect_lambda.name
+  execution_arn        = aws_api_gateway_rest_api.url_shortener_api.execution_arn
+}
+
+module "delete_url_method" {
+  source               = "./modules/api-gateway"
+  api_id               = aws_api_gateway_rest_api.url_shortener_api.id
+  http_method          = "DELETE"
+  resource_id          = aws_api_gateway_rest_api.url_shortener_api.root_resource_id
+  resource_path        = "/"
+  integration_uri      = module.delete_lambda.invoke_arn
+  lambda_function_name = module.delete_lambda.name
   execution_arn        = aws_api_gateway_rest_api.url_shortener_api.execution_arn
 }
