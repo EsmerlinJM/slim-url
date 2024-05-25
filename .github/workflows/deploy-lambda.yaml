@@ -8,6 +8,10 @@ on:
       working_directory:
         required: true
         type: string
+      environment:
+        required: false
+        type: string
+        default: staging
 
 permissions:
   id-token: write
@@ -15,7 +19,7 @@ permissions:
 
 jobs:
   deploy_lambda:
-    environment: 'staging'
+    environment: ${{ inputs.working_directory }}
     name: 'Deploy Lambda Function'
     runs-on: ubuntu-latest
     defaults:
