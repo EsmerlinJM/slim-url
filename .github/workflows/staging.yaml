@@ -1,18 +1,16 @@
 name: Deploy Infrastructure
 on:
   workflow_run:
-    types:
-    - completed
     workflows:
     - Clean deployment enviroment with Infrastructure
-  pull_request:
-    types: [closed]
+    types:
+    - completed
   push:
     branches:
     - main
     paths:
     - iac/**/*
-    - .github/workflows/deploy-infra.yaml
+    - .github/workflows/staging.yaml
     - .github/workflows/development.yaml
     - .github/workflows/clean.yaml
 
@@ -29,7 +27,7 @@ jobs:
     environment: 'staging'
     name: 'Terraform'
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event.pull_request.merged == true }}
     steps:
 
     - name: Checkout
@@ -70,4 +68,28 @@ jobs:
       env:
         TF_VAR_lambda_prefix_name: 'staging'
       run: terraform apply -auto-approve -input=false plan
+
+  deploy_create_short_url_lambda:
+    needs: terraform
+    uses: ./.github/workflows/deploy-lambda.yaml
+    secrets: inherit
+    with:
+      lambda_name: create-short-url-staging
+      working_directory: apps/create-short-url/
+
+  deploy_redirect_lambda:
+    needs: terraform
+    uses: ./.github/workflows/deploy-lambda.yaml
+    secrets: inherit
+    with:
+      lambda_name: redirect-staging
+      working_directory: apps/create-short-url/
+
+  deploy_delete_url_lambda:
+    needs: terraform
+    uses: ./.github/workflows/deploy-lambda.yaml
+    secrets: inherit
+    with:
+      lambda_name: delete-url-staging
+      working_directory: apps/redirect/
 
