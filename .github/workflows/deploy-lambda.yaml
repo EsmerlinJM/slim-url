@@ -8,12 +8,12 @@ on:
       working_directory:
         required: true
         type: string
-  push:
-    branches:
-    - main
-    paths:
-    - apps/**/*
-    - .github/workflows/deploy-lambda.yaml
+        # push:
+        #   branches:
+        #   - main
+        #   paths:
+        #   - apps/**/*
+        #   - .github/workflows/deploy-lambda.yaml
 
 defaults:
   run:

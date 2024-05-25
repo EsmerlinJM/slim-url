@@ -110,7 +110,8 @@ jobs:
       run: terraform apply -auto-approve -input=false
 
   deploy_create_short_url_lambda:
-    needs: terraform
+    needs:
+    - terraform
     uses: ./.github/workflows/deploy-lambda.yaml
     secrets: inherit
     with:
@@ -118,7 +119,8 @@ jobs:
       working_directory: apps/create-short-url/
 
   deploy_redirect_lambda:
-    needs: terraform
+    needs:
+    - terraform
     uses: ./.github/workflows/deploy-lambda.yaml
     secrets: inherit
     with:
@@ -126,7 +128,8 @@ jobs:
       working_directory: apps/create-short-url/
 
   deploy_delete_url_lambda:
-    needs: terraform
+    needs:
+    - terraform
     uses: ./.github/workflows/deploy-lambda.yaml
     secrets: inherit
     with:
