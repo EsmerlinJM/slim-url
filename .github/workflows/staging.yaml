@@ -75,7 +75,7 @@ jobs:
     secrets: inherit
     with:
       lambda_name: create-short-url-staging
-      working_directoy: apps/create-short-url/
+      working_directory: apps/create-short-url/
 
   deploy_redirect_lambda:
     needs: terraform
@@ -83,7 +83,7 @@ jobs:
     secrets: inherit
     with:
       lambda_name: redirect-staging
-      working_directoy: apps/create-short-url/
+      working_directory: apps/create-short-url/
 
   deploy_delete_url_lambda:
     needs: terraform
@@ -91,5 +91,5 @@ jobs:
     secrets: inherit
     with:
       lambda_name: delete-url-staging
-      working_directoy: apps/redirect/
+      working_directory: apps/redirect/
 
