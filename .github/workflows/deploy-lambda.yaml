@@ -8,16 +8,6 @@ on:
       working_directory:
         required: true
         type: string
-        # push:
-        #   branches:
-        #   - main
-        #   paths:
-        #   - apps/**/*
-        #   - .github/workflows/deploy-lambda.yaml
-
-defaults:
-  run:
-    working-directory: ${{ inputs.working_directory }}
 
 permissions:
   id-token: write
@@ -28,6 +18,9 @@ jobs:
     environment: 'staging'
     name: 'Deploy Lambda Function'
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_directory }}
     steps:
 
     - name: Checkout
