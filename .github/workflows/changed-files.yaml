@@ -43,6 +43,12 @@ jobs:
         }
 
         echo "paths=$(echo extract_directory_path | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_OUTPUT"
+
+        if [ -z "$paths" ]; then
+          echo "No paths found."
+          exit 1
+        fi
+
         paths_array=$(echo "$paths" | jq -r '.[]')
 
         paths_without_prefix=()
@@ -51,6 +57,12 @@ jobs:
         done
 
         echo "paths_without_prefix=$(printf '%s\n' "${paths_without_prefix[@]}" | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_OUTPUT"
+
+    - name: Debug Output
+      run: |
+        echo "Paths without prefix: ${{ steps.remove_prefix.outputs.paths_without_prefix }}"
+        echo "Paths: ${{ steps.remove_prefix.outputs.paths }}"
+
 
 
 
