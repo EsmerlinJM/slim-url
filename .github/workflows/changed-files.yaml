@@ -44,7 +44,7 @@ jobs:
 
         paths=$(extract_directory_path)
         json_paths=$(echo "$paths" | jq -R -s -c 'split("\n")[:-1]')
-        echo "paths=$(jq -cr '@json' <<< $json_paths")" >> "$GITHUB_OUTPUT"
+        echo "paths=$(jq -cr '@json' <<< "$json_paths")" >> "$GITHUB_OUTPUT"
 
 
     - name: Remove 'apps/' Prefix
@@ -65,7 +65,7 @@ jobs:
         done
 
         json_paths_without_prefix=$(printf '%s\n' "${paths_without_prefix[@]}" | jq -R -s -c 'split("\n")[:-1]')
-        echo "paths_without_prefix=$(jq -cr '@json' <<< $json_paths_without_prefix")" >> "$GITHUB_OUTPUT"
+        echo "paths_without_prefix=$(jq -cr '@json' <<< "$json_paths_without_prefix")" >> "$GITHUB_OUTPUT"
 
 
     - name: Debug Output
