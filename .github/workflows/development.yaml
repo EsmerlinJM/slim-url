@@ -124,8 +124,8 @@ jobs:
     - get_changes
     strategy:
       matrix:
-        paths_without_prefix: "${{ needs.get_changes.outputs.paths_without_prefix }}"
-        paths: "${{ needs.get_changes.outputs.paths }}"
+        paths_without_prefix: "${{ toJSON(needs.get_changes.outputs.paths_without_prefix) }}"
+        paths: "${{ toJSON(needs.get_changes.outputs.paths) }}"
     uses: ./.github/workflows/deploy-lambda.yaml
     secrets: inherit
     with:
