@@ -104,10 +104,10 @@ jobs:
       if: steps.plan.outcome == 'failure'
       run: exit 1
 
-    - name: Terraform Apply
-      env:
-        TF_VAR_lambda_prefix_name: ${{ steps.shorten_sha.outputs.short_sha }}
-      run: terraform apply -auto-approve -input=false
+    # - name: Terraform Apply
+    #   env:
+    #     TF_VAR_lambda_prefix_name: ${{ steps.shorten_sha.outputs.short_sha }}
+    #   run: terraform apply -auto-approve -input=false
 
     - name: Verify Changed files
       uses: tj-actions/changed-files@v44
