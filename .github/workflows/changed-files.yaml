@@ -1,9 +1,10 @@
 name: Getting changed files from app folder
 on:
   workflow_call:
-    working_directory:
-      required: true
-      type: string
+    inputs:
+      working_directory:
+        required: true
+        type: string
 
 permissions:
   id-token: write
