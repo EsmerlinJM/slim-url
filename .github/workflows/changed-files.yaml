@@ -42,7 +42,14 @@ jobs:
           done | sort -u
         }
 
-        echo "paths=$(echo extract_directory_path | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_OUTPUT"
+        paths=$(extract_directory_path)
+        json_paths=$(echo "$paths" | jq -R -s -c 'split("\n")[:-1]')
+        echo "paths=$json_paths >> "$GITHUB_OUTPUT"
+
+    - name: Remove 'apps/' Prefix
+      id: remove_prefix
+      run: |
+        paths="${{ steps.extract_paths.outputs.paths }}"
 
         if [ -z "$paths" ]; then
           echo "No paths found."
@@ -56,7 +63,9 @@ jobs:
           paths_without_prefix+=("${path#apps/}")
         done
 
-        echo "paths_without_prefix=$(printf '%s\n' "${paths_without_prefix[@]}" | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_OUTPUT"
+        json_paths_without_prefix=$(printf '%s\n' "${paths_without_prefix[@]}" | jq -R -s -c 'split("\n")[:-1]')
+        echo "json_paths_without_prefix=$json_paths_without_prefix" >> "$GITHUB_OUTPUT"
+
 
     - name: Debug Output
       run: |
