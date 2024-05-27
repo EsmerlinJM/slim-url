@@ -110,7 +110,7 @@ jobs:
       run: terraform apply -auto-approve -input=false
 
     - name: Verify Changed files
-      uses: tj-actions/verify-changed-files@v44
+      uses: tj-actions/changed-files@v44
       id: verify-changed-files
       with:
         files: |
