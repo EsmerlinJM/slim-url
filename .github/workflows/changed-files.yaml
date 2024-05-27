@@ -1,0 +1,56 @@
+name: Getting changed files from app folder
+on:
+  workflow_call:
+    working_directory:
+      required: true
+      type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  get_changes:
+    name: 'Changed files'
+    runs-on: ubuntu-latest
+
+    outputs:
+      paths: ${{ steps.extract_paths.outputs.paths }}
+      paths_without_prefix: ${{ steps.extract_paths.outputs.paths_without_prefix }}
+
+    steps:
+
+    - name: Install jq
+      run: sudo apt-get install -y jq
+
+    - name: Get changed files
+      id: changed_files
+      uses: tj-actions/changed-files@v44
+      with:
+        files: ${{ inputs.working_directory }}/**
+
+    - name: Extract changed paths
+      id: extract_paths
+      env:
+        ALL_CHANGED_FILES: ${{ steps.changed_files.outputs.all_changed_files }}
+      run: |
+        extract_directory_path() {
+          for file in ${ALL_CHANGED_FILES}; do
+            dir=$(dirname "$file" | awk -F/ '{print $1"/"$2}')
+            echo "$dir"
+          done | sort -u
+        }
+
+        echo "paths=$(echo extract_directory_path | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_OUTPUT"
+        paths_array=$(echo "$paths" | jq -r '.[]')
+
+        paths_without_prefix=()
+        for path in $paths_array; do
+          paths_without_prefix+=("${path#apps/}")
+        done
+
+        echo "paths_without_prefix=$(printf '%s\n' "${paths_without_prefix[@]}" | jq -R -s -c 'split("\n")[:-1]')" >> "$GITHUB_OUTPUT"
+
+
+
+
