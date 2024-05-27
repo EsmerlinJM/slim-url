@@ -114,7 +114,7 @@ jobs:
       id: verify-changed-files
       with:
         files: |
-          apps/**/*
+          apps
 
     - name: Get Working Directories from changed files
       if: steps.verify-changed-files.outputs.files_changed == 'true'
