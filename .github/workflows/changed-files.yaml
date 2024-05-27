@@ -42,15 +42,19 @@ jobs:
           done | sort -u
         }
 
+        # paths=$(extract_directory_path)
+        # json_paths=$(echo "$paths" | jq -R -s -c 'split("\n")[:-1]')
+        # echo "paths=$(jq -cr '@json' <<< "$json_paths")" >> "$GITHUB_OUTPUT"
+
         paths=$(extract_directory_path)
-        json_paths=$(echo "$paths" | jq -R -s -c 'split("\n")[:-1]')
-        echo "paths=$(jq -cr '@json' <<< "$json_paths")" >> "$GITHUB_OUTPUT"
+        # echo "::set-output name=paths::$(jq -nc '$paths')"
+        echo "paths=$(jq -nc '$paths') >> "$GITHUB_OUTPUT"
 
 
     - name: Remove 'apps/' Prefix
       id: remove_prefix
       run: |
-        paths='${{ steps.extract_paths.outputs.paths }}'
+        paths="${{ steps.extract_paths.outputs.paths }}"
 
         if [ -z "$paths" ]; then
           echo "No paths found."
@@ -64,14 +68,15 @@ jobs:
           paths_without_prefix+=("${path#apps/}")
         done
 
-        json_paths_without_prefix=$(printf '%s\n' "${paths_without_prefix[@]}" | jq -R -s -c 'split("\n")[:-1]')
-        echo "paths_without_prefix=$(jq -cr '@json' <<< "$json_paths_without_prefix")" >> "$GITHUB_OUTPUT"
+        # json_paths_without_prefix=$(printf '%s\n' "${paths_without_prefix[@]}" | jq -R -s -c 'split("\n")[:-1]')
+        # echo "paths_without_prefix=$(jq -cr '@json' <<< "$json_paths_without_prefix")" >> "$GITHUB_OUTPUT"
+        echo "paths_without_prefix=$(jq -nc '$paths_without_prefix')" >> "$GITHUB_OUTPUT"
 
 
     - name: Debug Output
       run: |
-        echo "Paths without prefix: ${{ steps.remove_prefix.outputs.paths_without_prefix }}"
-        echo "Paths: ${{ steps.extract_paths.outputs.paths }}"
+        echo "${{ steps.remove_prefix.outputs.paths_without_prefix }}"
+        echo "${{ steps.extract_paths.outputs.paths }}"
 
 
 
