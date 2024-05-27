@@ -51,8 +51,10 @@ jobs:
 
     - name: Remove 'apps/' Prefix
       id: remove_prefix
+      env:
+        PATHS: ${{ steps.extract_paths.outputs.paths }}
       run: |
-        paths="${{ steps.extract_paths.outputs.paths }}"
+        paths=$ALL_CHANGED_FILES
 
         if [ -z "$paths" ]; then
           echo "No paths found."
