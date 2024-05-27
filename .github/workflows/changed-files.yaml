@@ -49,7 +49,7 @@ jobs:
     - name: Remove 'apps/' Prefix
       id: remove_prefix
       run: |
-        paths='${{ steps.extract_paths.outputs.paths }}''
+        paths='${{ steps.extract_paths.outputs.paths }}'
 
         if [ -z "$paths" ]; then
           echo "No paths found."
