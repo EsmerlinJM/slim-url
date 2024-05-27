@@ -113,8 +113,9 @@ jobs:
       uses: tj-actions/changed-files@v44
       id: verify-changed-files
       with:
-        files: |
-          apps
+        files_yaml: |
+          apps:
+            - apps/**
 
     - name: Get Working Directories from changed files
       if: steps.verify-changed-files.outputs.files_changed == 'true'
