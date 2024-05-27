@@ -32,7 +32,7 @@ jobs:
 
     - name: Extract changed paths
       id: extract_paths
-      if: steps.changed_files.outputs.all_changed_files  == 'true'
+      if: steps.changed_files.outputs.any_changed  == 'true'
       env:
         ALL_CHANGED_FILES: ${{ steps.changed_files.outputs.all_changed_files }}
       run: |
