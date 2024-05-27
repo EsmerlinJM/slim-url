@@ -48,7 +48,7 @@ jobs:
 
         paths=$(extract_directory_path)
         # echo "::set-output name=paths::$(jq -nc '$paths')"
-        echo "paths=$(jq -nc '$paths') >> "$GITHUB_OUTPUT"
+        echo "paths=$(jq -nc '$paths')" >> "$GITHUB_OUTPUT"
 
 
     - name: Remove 'apps/' Prefix
