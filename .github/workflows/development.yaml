@@ -109,34 +109,49 @@ jobs:
         TF_VAR_lambda_prefix_name: ${{ steps.shorten_sha.outputs.short_sha }}
       run: terraform apply -auto-approve -input=false
 
-  deploy_create_short_url_lambda:
-    needs:
-    - terraform
-    uses: ./.github/workflows/deploy-lambda.yaml
-    secrets: inherit
-    with:
-      lambda_name: create-short-url-${{ needs.terraform.outputs.short_sha }}
-      working_directory: apps/create-short-url/
-      # environment: development
+    - name: Verify Changed files
+      uses: tj-actions/verify-changed-files@v44
+      id: verify-changed-files
+      with:
+        files: |
+          apps/**/*
 
-  deploy_redirect_lambda:
-    needs:
-    - terraform
-    uses: ./.github/workflows/deploy-lambda.yaml
-    secrets: inherit
-    with:
-      lambda_name: redirect-${{ needs.terraform.outputs.short_sha }}
-      working_directory: apps/redirect/
-      # environment: development
+    - name: Get Working Directories from changed files
+      if: steps.verify-changed-files.outputs.files_changed == 'true'
+      env:
+        CHANGED_FILES: ${{ steps.verify-changed-files.outputs.changed_files }}
+      run: |
+        echo "$CHANGED_FILES"
 
-  deploy_delete_url_lambda:
-    needs:
-    - terraform
-    uses: ./.github/workflows/deploy-lambda.yaml
-    secrets: inherit
-    with:
-      lambda_name: delete-url-${{ needs.terraform.outputs.short_sha }}
-      working_directory: apps/delete-url/
-      # environment: development
+
+  # deploy_create_short_url_lambda:
+  #   needs:
+  #   - terraform
+  #   uses: ./.github/workflows/deploy-lambda.yaml
+  #   secrets: inherit
+  #   with:
+  #     lambda_name: create-short-url-${{ needs.terraform.outputs.short_sha }}
+  #     working_directory: apps/create-short-url/
+  #     # environment: development
+
+  # deploy_redirect_lambda:
+  #   needs:
+  #   - terraform
+  #   uses: ./.github/workflows/deploy-lambda.yaml
+  #   secrets: inherit
+  #   with:
+  #     lambda_name: redirect-${{ needs.terraform.outputs.short_sha }}
+  #     working_directory: apps/redirect/
+  #     # environment: development
+
+  # deploy_delete_url_lambda:
+  #   needs:
+  #   - terraform
+  #   uses: ./.github/workflows/deploy-lambda.yaml
+  #   secrets: inherit
+  #   with:
+  #     lambda_name: delete-url-${{ needs.terraform.outputs.short_sha }}
+  #     working_directory: apps/delete-url/
+  # environment: development
 
 
