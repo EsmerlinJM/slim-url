@@ -37,78 +37,85 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
         role-to-assume: ${{ secrets.ARN_ROLE_ASUME }}
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
+    # - name: Setup Terraform
+    #   uses: hashicorp/setup-terraform@v3
 
-    - name: Terraform Init
-      id: init
-      run: terraform init -reconfigure -backend-config="bucket=${{ secrets.BUCKET_NAME }}" -backend-config="key=${{ secrets.KEY_STATE_NAME }}"
+    # - name: Terraform Init
+    #   id: init
+    #   run: terraform init -reconfigure -backend-config="bucket=${{ secrets.BUCKET_NAME }}" -backend-config="key=${{ secrets.KEY_STATE_NAME }}"
 
-    - name: Terraform Format
-      id: fmt
-      run: terraform fmt
+    # - name: Terraform Format
+    #   id: fmt
+    #   run: terraform fmt
 
-    - name: Auto Commit Changes
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        commit_message: "Terraform fmt"
-        file_pattern: "*.tf"
-        commit_user_name: "github-actions[bot]"
+    # - name: Auto Commit Changes
+    #   uses: stefanzweifel/git-auto-commit-action@v5
+    #   with:
+    #     commit_message: "Terraform fmt"
+    #     file_pattern: "*.tf"
+    #     commit_user_name: "github-actions[bot]"
 
-    - name: Terraform validate
-      id: validate
-      run: terraform validate
+    # - name: Terraform validate
+    #   id: validate
+    #   run: terraform validate
 
-    - name: Shorten commit SHA
-      id: shorten_sha
-      run: echo "short_sha=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+    # - name: Shorten commit SHA
+    #   id: shorten_sha
+    #   run: echo "short_sha=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
-    - name: Terraform Plan
-      id: plan
-      env:
-        TF_VAR_lambda_prefix_name: ${{ steps.shorten_sha.outputs.short_sha }}
-      run: |
-        terraform plan -input=false -no-color
-      continue-on-error: true
+    # - name: Terraform Plan
+    #   id: plan
+    #   env:
+    #     TF_VAR_lambda_prefix_name: ${{ steps.shorten_sha.outputs.short_sha }}
+    #   run: |
+    #     terraform plan -input=false -no-color
+    #   continue-on-error: true
 
-    - uses: actions/github-script@v7
-      name: "Terraform Plan Comment"
-      if: github.event_name == 'pull_request'
-      env:
-        PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-          #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-          #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-          #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+    # - uses: actions/github-script@v7
+    #   name: "Terraform Plan Comment"
+    #   if: github.event_name == 'pull_request'
+    #   env:
+    #     PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+    #   with:
+    #     github-token: ${{ secrets.GITHUB_TOKEN }}
+    #     script: |
+    #       const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+    #       #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+    #       #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+    #       #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
 
-          <details><summary>Show Plan</summary>
+    #       <details><summary>Show Plan</summary>
 
-          \`\`\`\n
-          ${process.env.PLAN}
-          \`\`\`
+    #       \`\`\`\n
+    #       ${process.env.PLAN}
+    #       \`\`\`
 
-          </details>
-          *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+    #       </details>
+    #       *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
 
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: output
-          })
+    #       github.rest.issues.createComment({
+    #         issue_number: context.issue.number,
+    #         owner: context.repo.owner,
+    #         repo: context.repo.repo,
+    #         body: output
+    #       })
 
-    - name: Terraform Plan Status
-      if: steps.plan.outcome == 'failure'
-      run: exit 1
+    # - name: Terraform Plan Status
+    #   if: steps.plan.outcome == 'failure'
+    #   run: exit 1
 
     # - name: Terraform Apply
     #   env:
     #     TF_VAR_lambda_prefix_name: ${{ steps.shorten_sha.outputs.short_sha }}
     #   run: terraform apply -auto-approve -input=false
 
+  get_changes:
+    name: 'Changed files'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/
+    steps:
     - name: Verify Changed files
       uses: tj-actions/changed-files@v44
       id: verify-changed-files
