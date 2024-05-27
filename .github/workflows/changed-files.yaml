@@ -54,7 +54,7 @@ jobs:
       env:
         PATHS: ${{ steps.extract_paths.outputs.paths }}
       run: |
-        paths=$ALL_CHANGED_FILES
+        paths="$PATHS"
 
         if [ -z "$paths" ]; then
           echo "No paths found."
