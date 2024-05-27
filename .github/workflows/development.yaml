@@ -16,7 +16,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  terraform:
+  infra:
     name: 'Terraform'
     runs-on: ubuntu-latest
     defaults:
@@ -111,7 +111,7 @@ jobs:
 
   get_changes:
     needs:
-    - terraform
+    - infra
     name: 'Changed files'
     runs-on: ubuntu-latest
     steps:
@@ -127,13 +127,14 @@ jobs:
         ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
       run: |
         for file in ${ALL_CHANGED_FILES}; do
-          echo "$file"
-        done
+          dir=$(dirname "$file" | awk -F/ '{print $1"/"$2}')
+          echo "$dir"
+        done | sort -u
 
 
   # deploy_create_short_url_lambda:
   #   needs:
-  #   - terraform
+  #   - infra
   #   uses: ./.github/workflows/deploy-lambda.yaml
   #   secrets: inherit
   #   with:
@@ -143,7 +144,7 @@ jobs:
 
   # deploy_redirect_lambda:
   #   needs:
-  #   - terraform
+  #   - infra
   #   uses: ./.github/workflows/deploy-lambda.yaml
   #   secrets: inherit
   #   with:
@@ -153,7 +154,7 @@ jobs:
 
   # deploy_delete_url_lambda:
   #   needs:
-  #   - terraform
+  #   - infra
   #   uses: ./.github/workflows/deploy-lambda.yaml
   #   secrets: inherit
   #   with:
