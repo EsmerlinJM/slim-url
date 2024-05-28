@@ -123,13 +123,12 @@ jobs:
     needs: get_changes
     strategy:
       matrix:
-        paths:
-        - directory: ${{ fromJSON(needs.get_changes.outputs.paths) }}
-        - lambda_name: ${{ fromJSON(needs.get_changes.outputs.paths_without_prefix) }}
+        paths_without_prefix: ${{ fromJSON(needs.get_changes.outputs.paths_without_prefix) }}
+        paths: ${{ fromJSON(needs.get_changes.outputs.paths) }}
     steps:
     - run: |
-        echo ${{ matrix.paths.directory }}
-        echo ${{ matrix.paths.lambda_name }}
+        echo ${{ matrix.paths }}
+        echo ${{ matrix.paths_without_prefix }}
 
   # deploy_lambda:
   #   needs:
