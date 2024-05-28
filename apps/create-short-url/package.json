@@ -1,7 +1,7 @@
 {
   "name": "create-short-url",
   "version": "1.0.0",
-  "description": "",
+  "description": "Create short url",
   "type": "module",
   "main": "index.js",
   "scripts": {

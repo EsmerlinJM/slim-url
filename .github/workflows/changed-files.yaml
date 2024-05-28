@@ -1,0 +1,97 @@
+name: Getting changed files from app folder
+on:
+  workflow_call:
+    inputs:
+      working_directory:
+        required: true
+        type: string
+    outputs:
+      paths:
+        description: "All paths extracted for working directories"
+        value: ${{ jobs.get_changes.outputs.paths }}
+      paths_without_prefix:
+        description: "All paths extracted for working directories"
+        value: ${{ jobs.get_changes.outputs.paths_without_prefix }}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  get_changes:
+    name: 'Changed files'
+    runs-on: ubuntu-latest
+
+    outputs:
+      paths: ${{ steps.setting_values.outputs.paths }}
+      paths_without_prefix: ${{ steps.setting_values.outputs.paths_without_prefix }}
+
+    steps:
+
+    - name: Install jq
+      run: sudo apt-get install -y jq
+
+    - name: Get changed files
+      id: changed_files
+      uses: tj-actions/changed-files@v44
+      with:
+        files: ${{ inputs.working_directory }}/**
+
+    - name: Extract changed paths
+      id: extract_paths
+      if: steps.changed_files.outputs.any_changed  == 'true'
+      env:
+        ALL_CHANGED_FILES: ${{ steps.changed_files.outputs.all_changed_files }}
+      run: |
+        extract_directory_path() {
+          for file in ${ALL_CHANGED_FILES}; do
+            dir=$(dirname "$file" | awk -F/ '{print $1"/"$2}')
+            echo "$dir"
+          done | sort -u
+        }
+
+        paths=$(extract_directory_path)
+        json_paths=$(echo "$paths" | jq -R -s -c 'split("\n")[:-1]')
+        echo "paths=$json_paths" >> "$GITHUB_OUTPUT"
+
+
+    - name: Remove 'apps/' Prefix
+      id: remove_prefix
+      env:
+        PATHS: ${{ steps.extract_paths.outputs.paths }}
+      run: |
+        paths="$PATHS"
+
+        if [ -z "$paths" ]; then
+          echo "No paths found."
+          exit 1
+        fi
+
+        paths_array=($(echo "$paths" | jq -r '.[]'))
+
+        paths_without_prefix=()
+        for path in "${paths_array[@]}"; do
+          paths_without_prefix+=("${path#apps/}")
+        done
+
+        json_paths_without_prefix=$(printf '%s\n' "${paths_without_prefix[@]}" | jq -R -s -c 'split("\n")[:-1]')
+        echo "paths_without_prefix=$json_paths_without_prefix" >> "$GITHUB_OUTPUT"
+
+    - id: setting_values
+      name: Setting output values
+      run: |
+        paths='${{ steps.extract_paths.outputs.paths }}'
+        paths_without_prefix='${{ steps.remove_prefix.outputs.paths_without_prefix }}'
+
+        paths_json=$(echo "$paths" | jq -c '{ paths: . }')
+        paths_without_prefix_json=$(echo "$paths_without_prefix" | jq -c '{ paths_without_prefix: . }')
+
+        echo "paths=$paths_json" >> "$GITHUB_OUTPUT"
+        echo "paths_without_prefix=$paths_without_prefix_json" >> "$GITHUB_OUTPUT"
+
+    - name: Debug Output
+      run: |
+        echo "${{ steps.setting_values.outputs.paths }}"
+        echo "${{ steps.setting_values.outputs.paths_without_prefix }}"
+
+

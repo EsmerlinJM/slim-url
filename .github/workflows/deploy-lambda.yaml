@@ -51,4 +51,5 @@ jobs:
       run: cd build && zip -r ../main.zip .
 
     - name: Update Lambda code
-      run: aws lambda update-function-code --function-name=${{ inputs.lambda_name }} --zip-file=fileb://main.zip
+      # run: aws lambda update-function-code --function-name=${{ inputs.lambda_name }} --zip-file=fileb://main.zip
+      run: echo ${{ inputs.lambda_name }}
