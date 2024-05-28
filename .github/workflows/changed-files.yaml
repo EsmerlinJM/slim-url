@@ -87,7 +87,7 @@ jobs:
       name: Setting output values
       env:
         PATHS: ${{ steps.extract_paths.outputs.paths }}
-        PATH_WITHOUT_PREFIX: ${{ steps.extract_paths.outputs.paths_without_prefix }}
+        PATH_WITHOUT_PREFIX: ${{ steps.remove_prefix.outputs.paths_without_prefix }}
       run: |
         paths="$PATHS"
         paths_without_prefix="$PATH_WITHOUT_PREFIX"
