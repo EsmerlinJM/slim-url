@@ -18,16 +18,15 @@ permissions:
   id-token: write
   contents: write
 
-defaults:
-  run:
-    working-directory: iac/
-
 jobs:
   terraform:
     environment: 'staging'
     name: 'Terraform'
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event.pull_request.merged == true }}
+    defaults:
+      run:
+        working-directory: iac/
     steps:
 
     - name: Checkout
@@ -61,12 +60,14 @@ jobs:
       id: plan
       env:
         TF_VAR_lambda_prefix_name: 'staging'
+        TF_VAR_env_prefix: 'staging'
       run: |
         terraform plan -out=plan -input=false
 
     - name: Terraform Apply
       env:
         TF_VAR_lambda_prefix_name: 'staging'
+        TF_VAR_env_prefix: 'staging'
       run: terraform apply -auto-approve -input=false plan
 
   get_changes:

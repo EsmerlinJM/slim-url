@@ -19,3 +19,9 @@ variable "lambda_prefix_name" {
   type        = string
   default     = "-lambda"
 }
+
+variable "env_prefix" {
+  description = "The prefix name of your environment"
+  type        = string
+  default     = "-lambda"
+}

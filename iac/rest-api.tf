@@ -1,6 +1,6 @@
 # API Gateway
 resource "aws_api_gateway_rest_api" "url_shortener_api" {
-  name = var.rest_api_name
+  name = "${var.rest_api_name}${var.env_prefix}"
 }
 
 resource "aws_api_gateway_deployment" "url_shortener_api_deployment" {

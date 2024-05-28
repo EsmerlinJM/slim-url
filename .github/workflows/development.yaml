@@ -67,6 +67,7 @@ jobs:
       id: plan
       env:
         TF_VAR_lambda_prefix_name: ${{ steps.shorten_sha.outputs.short_sha }}
+        TF_VAR_env_prefix: ${{ steps.shorten_sha.outputs.short_sha }}
       run: |
         terraform plan -input=false -no-color
       continue-on-error: true
@@ -107,6 +108,7 @@ jobs:
     - name: Terraform Apply
       env:
         TF_VAR_lambda_prefix_name: ${{ steps.shorten_sha.outputs.short_sha }}
+        TF_VAR_env_prefix: ${{ steps.shorten_sha.outputs.short_sha }}
       run: terraform apply -auto-approve -input=false
 
   get_changes:
