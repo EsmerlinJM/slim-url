@@ -82,12 +82,12 @@ jobs:
         paths_json=$(echo "$paths" | jq -c '.')
         paths_without_prefix_json=$(echo "$paths_without_prefix" | jq -c '.')
 
-        echo "combined_json=$(jq -n --arg paths "$paths_json" --arg paths_without_prefix "$paths_without_prefix_json" '{
+        combined_json=$(jq -n --arg paths "$paths_json" --arg paths_without_prefix "$paths_without_prefix_json" '{
           paths: ($paths | fromjson),
           paths_without_prefix: ($paths_without_prefix | fromjson)
-        }')" >> "$GITHUB_OUTPUT"
+        }')
 
-        echo "$combined_json"
+        echo "combined_json=$combined_json" >> "$GITHUB_OUTPUT"
 
     - name: Debug Output
       run: |
