@@ -123,8 +123,10 @@ jobs:
     needs: get_changes
     strategy:
       matrix:
-        paths_without_prefix: ${{ fromJson(toJson(needs.get_changes.outputs.paths_without_prefix)) }}
-        paths: ${{ fromJson(toJson(needs.get_changes.outputs.paths)) }}
+        paths_without_prefix:
+        - path: ${{ fromJSON(needs.get_changes.outputs.paths_without_prefix) }}
+        paths:
+        - path: ${{ fromJSON(needs.get_changes.outputs.paths }}
     steps:
     - run: |
         echo ${{ matrix.paths_without_prefix }}
