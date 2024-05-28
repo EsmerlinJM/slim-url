@@ -60,7 +60,7 @@ jobs:
           exit 1
         fi
 
-        paths_array=($(echo "$paths" | jq -r '.[]'))
+        paths_array=($(echo "$paths" | jq -r '.[].path'))
 
         paths_without_prefix=()
         for path in "${paths_array[@]}"; do
