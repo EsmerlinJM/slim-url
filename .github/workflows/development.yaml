@@ -124,7 +124,7 @@ jobs:
     strategy:
       matrix:
         paths:
-        - directory: ${{ fromJSON(needs.get_changes.outputs.paths }}
+        - directory: ${{ fromJSON(needs.get_changes.outputs.paths) }}
         - lambda_name: ${{ fromJSON(needs.get_changes.outputs.paths_without_prefix) }}
     steps:
     - run: |
