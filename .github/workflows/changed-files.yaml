@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      paths: ${{ steps.setting_values.outputs.combined_json }}
+      paths: ${{ steps.setting_values.outputs.paths }}
 
     steps:
 
