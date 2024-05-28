@@ -77,12 +77,6 @@ jobs:
         json_paths_without_prefix=$(printf '%s\n' "${paths_without_prefix[@]}" | jq -R -s -c 'split("\n")[:-1]')
         echo "paths_without_prefix=$json_paths_without_prefix" >> "$GITHUB_OUTPUT"
 
-
-    - name: Debug Output
-      run: |
-        echo "${{ steps.remove_prefix.outputs.paths_without_prefix }}"
-        echo "${{ steps.extract_paths.outputs.paths }}"
-
     - id: setting_values
       name: Setting output values
       env:
@@ -94,4 +88,9 @@ jobs:
 
         echo "paths=$(jq -nc --argjson paths_array "$paths" '{ paths: $paths_array }')" >> $GITHUB_OUTPUT
         echo "paths_without_prefix=$(jq -nc --argjson paths_array "$paths_without_prefix" '{ paths_without_prefix: $paths_array }')" >> $GITHUB_OUTPUT
+
+    - name: Debug Output
+      run: |
+        echo "${{ steps.setting_values.outputs.paths_without_prefix }}"
+        echo "${{ steps.setting_values.outputs.paths }}"
 
