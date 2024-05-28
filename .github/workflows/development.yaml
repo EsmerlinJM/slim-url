@@ -123,8 +123,7 @@ jobs:
     - infra
     - get_changes
     strategy:
-      matrix:
-        matrix: ${{ fromJSON(needs.get_changes.outputs.paths_without_prefix) }}
+      matrix: ${{ fromJSON(needs.get_changes.outputs.paths_without_prefix) }}
     uses: ./.github/workflows/deploy-lambda.yaml
     secrets: inherit
     with:
