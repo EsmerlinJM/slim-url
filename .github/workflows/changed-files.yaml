@@ -75,17 +75,18 @@ jobs:
 
     - id: setting_values
       name: Setting output values
-      env:
-        PATHS: ${{ steps.extract_paths.outputs.paths }}
-        PATH_WITHOUT_PREFIX: ${{ steps.remove_prefix.outputs.paths_without_prefix }}
       run: |
-        paths="$PATHS"
-        paths_without_prefix="$PATHS_WITHOUT_PREFIX"
+        paths='${{ steps.extract_paths.outputs.paths }}'
+        paths_without_prefix='${{ steps.remove_prefix.outputs.paths_without_prefix }}'
 
-        paths_json=$(jq -nc --argjson paths "$paths" '{ paths: $paths }')
-        paths_without_prefix_json=$(jq -nc --argjson paths_without_prefix "$paths_without_prefix" '{ paths_without_prefix: $paths_without_prefix }')
+        paths_json=$(echo "$paths" | jq -c '.')
+        paths_without_prefix_json=$(echo "$paths_without_prefix" | jq -c '.')
 
-        combined_json=$(jq -n "$paths_json + $paths_without_prefix_json")
+        combined_json=$(jq -n --arg paths "$paths_json" --arg paths_without_prefix "$paths_without_prefix_json" '{
+          paths: ($paths | fromjson),
+          paths_without_prefix: ($paths_without_prefix | fromjson)
+        }')
+
         echo "combined_json=$combined_json" >> "$GITHUB_OUTPUT"
 
     - name: Debug Output
