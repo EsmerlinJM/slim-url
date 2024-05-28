@@ -1,5 +1,5 @@
 resource "aws_dynamodb_table" "urls" {
-  name           = "urls${var.env_prefix}"
+  name           = "urls-${var.env_prefix}"
   billing_mode   = "PROVISIONED"
   read_capacity  = 1
   write_capacity = 1
