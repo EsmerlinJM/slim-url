@@ -5,6 +5,13 @@ on:
       working_directory:
         required: true
         type: string
+    outputs:
+      paths:
+        description: "All paths extracted for working  directories"
+        value: ${{ steps.extract_paths.outputs.paths }}
+      paths_without_prefix:
+        description: "All paths of functions folder to create it them"
+        value: ${{ steps.extract_paths.outputs.paths_without_prefix }}
 
 permissions:
   id-token: write

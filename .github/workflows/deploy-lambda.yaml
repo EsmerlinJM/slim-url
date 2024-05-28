@@ -22,9 +22,9 @@ jobs:
     environment: ${{ inputs.environment }}
     name: 'Deploy Lambda Function'
     runs-on: ubuntu-latest
-    # defaults:
-    #   run:
-    #     working-directory: ${{ inputs.working_directory }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_directory }}
     steps:
 
     - name: Checkout
@@ -41,17 +41,15 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
         role-to-assume: ${{ secrets.ARN_ROLE_ASUME }}
 
-    # - name: Install packages
-    #   run: npm install
+    - name: Install packages
+      run: npm install
 
-    # - name: Build
-    #   run: npm run build
+    - name: Build
+      run: npm run build
 
-    # - name: Zip build
-    #   run: cd build && zip -r ../main.zip .
+    - name: Zip build
+      run: cd build && zip -r ../main.zip .
 
     - name: Update Lambda code
       # run: aws lambda update-function-code --function-name=${{ inputs.lambda_name }} --zip-file=fileb://main.zip
-      run: |
-        echo ${{ inputs.lambda_name }}
-        echo ${{ inputs.working_directory }}
+      run: echo ${{ inputs.lambda_name }}
