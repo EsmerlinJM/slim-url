@@ -51,7 +51,7 @@ jobs:
         }
 
         paths=$(extract_directory_path)
-        json_paths=$(echo "$paths" | jq -R -s -c 'split("\n")[:-1] | map({path: .})')
+        json_paths=$(echo "$paths" | jq -R -s -c 'split("\n")[:-1]')
         echo "paths=$json_paths" >> "$GITHUB_OUTPUT"
 
 
@@ -67,15 +67,14 @@ jobs:
           exit 1
         fi
 
-        paths_array=($(echo "$paths" | jq -r '.[].path'))
+        paths_array=($(echo "$paths" | jq -r '.[]'))
 
         paths_without_prefix=()
         for path in "${paths_array[@]}"; do
-          cleaned_path="${path#apps/}"
-          paths_without_prefix+=("{\"path\":\"$cleaned_path\"}")
+          paths_without_prefix+=("${path#apps/}")
         done
 
-        json_paths_without_prefix=$(printf '%s\n' "${paths_without_prefix[@]}" | jq -R -s -c 'split("\n")[:-1] | map(fromjson)')
+        json_paths_without_prefix=$(printf '%s\n' "${paths_without_prefix[@]}" | jq -R -s -c 'split("\n")[:-1]')
         echo "paths_without_prefix=$json_paths_without_prefix" >> "$GITHUB_OUTPUT"
 
 
