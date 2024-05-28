@@ -7,11 +7,8 @@ on:
         type: string
     outputs:
       paths:
-        description: "All paths extracted for working  directories"
+        description: "All paths extracted for working directories"
         value: ${{ jobs.get_changes.outputs.paths }}
-      paths_without_prefix:
-        description: "All paths of functions folder to create it them"
-        value: ${{ jobs.get_changes.outputs.paths_without_prefix }}
 
 permissions:
   id-token: write
@@ -24,7 +21,6 @@ jobs:
 
     outputs:
       paths: ${{ steps.setting_values.outputs.paths }}
-      paths_without_prefix: ${{ steps.setting_values.outputs.paths_without_prefix }}
 
     steps:
 
@@ -86,11 +82,12 @@ jobs:
         paths="$PATHS"
         paths_without_prefix="$PATH_WITHOUT_PREFIX"
 
-        echo "paths=$(jq -nc --argjson paths_array "$paths" '{ paths: $paths_array }')" >> $GITHUB_OUTPUT
-        echo "paths_without_prefix=$(jq -nc --argjson paths_array "$paths_without_prefix" '{ paths_without_prefix: $paths_array }')" >> $GITHUB_OUTPUT
+        paths_json=$(jq -nc --argjson paths "$paths" '{ paths: $paths }')
+        paths_without_prefix_json=$(jq -nc --argjson paths_without_prefix "$paths_without_prefix" '{ paths_without_prefix: $paths_without_prefix }')
+
+        echo "paths=$(jq -n "$paths_json + $paths_without_prefix_json")" >> $GITHUB_OUTPUT
 
     - name: Debug Output
       run: |
-        echo "${{ steps.setting_values.outputs.paths_without_prefix }}"
         echo "${{ steps.setting_values.outputs.paths }}"
 

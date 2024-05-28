@@ -122,13 +122,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: get_changes
     strategy:
-      matrix:
-        paths_without_prefix: ${{ fromJSON(needs.get_changes.outputs.paths_without_prefix) }}
-        paths: ${{ fromJSON(needs.get_changes.outputs.paths) }}
+      matrix: ${{ fromJSON(needs.get_changes.outputs.paths) }}
+      # paths_without_prefix: ${{ fromJSON(needs.get_changes.outputs.paths_without_prefix) }}
+      # paths: ${{ fromJSON(needs.get_changes.outputs.paths) }}
     steps:
     - run: |
         echo ${{ matrix.paths }}
-        echo ${{ matrix.paths_without_prefix }}
 
   # deploy_lambda:
   #   needs:
