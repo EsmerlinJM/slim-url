@@ -8,10 +8,10 @@ on:
     outputs:
       paths:
         description: "All paths extracted for working  directories"
-        value: ${{ toJson(steps.extract_paths.outputs) }}
+        value: ${{ toJSON(jobs.get_changes.outputs.paths) }}
       paths_without_prefix:
         description: "All paths of functions folder to create it them"
-        value: ${{ toJson(steps.remove_prefix.outputs) }}
+        value: ${{ toJSON(jobs.get_changes.outputs.paths_without_prefix) }}
 
 permissions:
   id-token: write
