@@ -9,6 +9,9 @@ on:
       paths:
         description: "All paths extracted for working directories"
         value: ${{ jobs.get_changes.outputs.paths }}
+      paths_without_prefix:
+        description: "All paths extracted for working directories"
+        value: ${{ jobs.get_changes.outputs.paths_without_prefix }}
 
 permissions:
   id-token: write
@@ -21,6 +24,7 @@ jobs:
 
     outputs:
       paths: ${{ steps.setting_values.outputs.paths }}
+      paths_without_prefix: ${{ steps.setting_values.outputs.paths_without_prefix }}
 
     steps:
 
