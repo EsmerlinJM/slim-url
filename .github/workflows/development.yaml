@@ -118,20 +118,26 @@ jobs:
       working_directory: apps
       # environment: development
 
-  deploy_lambda:
-    needs:
-    - infra
-    - get_changes
-    strategy:
-      matrix:
-        paths_without_prefix: ${{ fromJson(needs.get_changes.outputs.paths_without_prefix) }}
-        paths: ${{ fromJson(needs.get_changes.outputs.paths) }}
-    uses: ./.github/workflows/deploy-lambda.yaml
-    secrets: inherit
-    with:
-      lambda_name: ${{ matrix.paths_without_prefix }}-
-      working_directory: ${{ matrix.paths }}
-      # environment: development  
+  job2:
+    runs-on: ubuntu-latest
+    needs: get_changes
+    steps:
+    - run: echo ${{ needs.get_changes.outputs.paths_without_prefix }} ${{ needs.get_changes.outputs.paths }}
+
+  # deploy_lambda:
+  #   needs:
+  #   - infra
+  #   - get_changes
+  #   strategy:
+  #     matrix:
+  #       paths_without_prefix: ${{ fromJson(needs.get_changes.outputs.paths_without_prefix) }}
+  #       paths: ${{ fromJson(needs.get_changes.outputs.paths) }}
+  #   uses: ./.github/workflows/deploy-lambda.yaml
+  #   secrets: inherit
+  #   with:
+  #     lambda_name: ${{ matrix.paths_without_prefix }}-
+  #     working_directory: ${{ matrix.paths }}
+  #     # environment: development  
 
   # deploy_create_short_url_lambda:
   #   needs:
