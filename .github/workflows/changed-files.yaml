@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      paths: ${{ steps.setting_values.outputs.paths }}
+      paths: ${{ steps.setting_values.outputs.combined_json }}
 
     steps:
 
@@ -80,14 +80,15 @@ jobs:
         PATH_WITHOUT_PREFIX: ${{ steps.remove_prefix.outputs.paths_without_prefix }}
       run: |
         paths="$PATHS"
-        paths_without_prefix="$PATH_WITHOUT_PREFIX"
+        paths_without_prefix="$PATHS_WITHOUT_PREFIX"
 
         paths_json=$(jq -nc --argjson paths "$paths" '{ paths: $paths }')
         paths_without_prefix_json=$(jq -nc --argjson paths_without_prefix "$paths_without_prefix" '{ paths_without_prefix: $paths_without_prefix }')
 
-        echo "paths=$(jq -n "$paths_json + $paths_without_prefix_json")" >> $GITHUB_OUTPUT
+        combined_json=$(jq -n "$paths_json + $paths_without_prefix_json")
+        echo "combined_json=$combined_json" >> "$GITHUB_OUTPUT"
 
     - name: Debug Output
       run: |
-        echo "${{ steps.setting_values.outputs.paths }}"
+        echo "${{ steps.setting_values.outputs.combined_json }}"
 
