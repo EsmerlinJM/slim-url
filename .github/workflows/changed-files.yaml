@@ -44,7 +44,7 @@ jobs:
         }
 
         paths=$(extract_directory_path)
-        json_paths=$(echo "$paths" | jq -R -s -c 'split("\n")[:-1]')
+        json_paths=$(echo "$paths" | jq -R -s -c 'split("\n")[:-1] | map({path: .})')
         echo "paths=$json_paths" >> "$GITHUB_OUTPUT"
 
 
