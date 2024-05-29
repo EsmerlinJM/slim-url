@@ -83,7 +83,7 @@ jobs:
     - terraform
     - get_changes
     strategy:
-      matrix: ${{ fromJSON(needs.get_changes.outputs.paths_without_prefix) || fromJSON("{"paths_without_prefix":["create-short-url","delete-url","redirect"]}") }}
+      matrix: ${{ fromJSON(needs.get_changes.outputs.paths_without_prefix) || fromJSON('{"paths_without_prefix":["create-short-url","delete-url","redirect"]}') }}
     uses: ./.github/workflows/deploy-lambda.yaml
     secrets: inherit
     with:
