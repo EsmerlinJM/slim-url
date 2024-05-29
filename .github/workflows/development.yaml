@@ -127,7 +127,7 @@ jobs:
     uses: ./.github/workflows/deploy-lambda.yaml
     secrets: inherit
     with:
-      lambda_name: ${{ matrix.paths_without_prefix }}-${{ needs.terraform.outputs.short_sha }}
+      lambda_name: ${{ matrix.paths_without_prefix }}-${{ needs.infra.outputs.short_sha }}
       working_directory: apps/${{ matrix.paths_without_prefix }}/
 
 
