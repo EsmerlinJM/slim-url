@@ -83,13 +83,16 @@ jobs:
     - id: setting_values
       name: Setting output values
       run: |
-        if [[ "${{ steps.changed_files.outputs.any_changed }}" == 'true' ]]; then
-          paths='${{ steps.extract_paths.outputs.paths }}'
-          paths_without_prefix='${{ steps.remove_prefix.outputs.paths_without_prefix }}'
-        else
+        if [[ "${{ steps.changed_files.outputs.any_changed }}" == 'false' ]]; then
           paths=$(echo "${{ steps.check_default_directories.outputs.directories }}" | jq -R -s -c 'split(",")')
           paths_without_prefix=$(echo "${{ steps.check_default_directories.outputs.directories }}" | sed 's|${{ inputs.working_directory }}/||' | jq -R -s -c 'split(",")')
+        else
+          paths='${{ steps.extract_paths.outputs.paths }}'
+          paths_without_prefix='${{ steps.remove_prefix.outputs.paths_without_prefix }}'
         fi
+
+        echo "$paths"
+        echo "$paths_without_prefix"
 
         paths_json=$(echo "$paths" | jq -c '{ paths: . }')
         paths_without_prefix_json=$(echo "$paths_without_prefix" | jq -c '{ paths_without_prefix: . }')
@@ -98,7 +101,6 @@ jobs:
         echo "paths_without_prefix=$paths_without_prefix_json" >> "$GITHUB_OUTPUT"
 
     - name: Debug Output
-      if: steps.changed_files.outputs.any_changed  == 'true'
       run: |
         echo "${{ steps.setting_values.outputs.paths }}"
         echo "${{ steps.setting_values.outputs.paths_without_prefix }}"
