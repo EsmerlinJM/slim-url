@@ -63,15 +63,17 @@ jobs:
         paths="$PATHS"
 
         if [ -z "$paths" ]; then
-          path=${{ inputs.working_directory }}/**
-          paths=$(ls -d "$path"/*/ 2>/dev/null | tr '\n' '\n' | sed 's/,$//'
+          directory=${{ inputs.working_directory }}
+          paths=$(ls -d "$directory"/** 2>/dev/null | tr '\n' '\n' | sed 's/,$//')
+          json_paths=$(echo "$paths" | jq -R -s -c 'split("\n")[:-1]')
+          paths=$json_paths
         fi
 
-        paths_array=($(echo "$paths" | jq -r '.[]'))
+        paths_array=$(echo "$paths" | jq -r '.[]')
 
         paths_without_prefix=()
-        for path in "${paths_array[@]}"; do
-          paths_without_prefix+=("${path#apps/}")
+        for directory in "${paths_array[@]}"; do
+          paths_without_prefix+=("${directory#apps/}")
         done
 
         json_paths_without_prefix=$(printf '%s\n' "${paths_without_prefix[@]}" | jq -R -s -c 'split("\n")[:-1]')
