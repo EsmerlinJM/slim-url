@@ -12,7 +12,6 @@ on:
       paths_without_prefix:
         description: "All paths extracted for working directories"
         value: ${{ jobs.get_changes.outputs.paths_without_prefix }}
-        default:
 
 permissions:
   id-token: write
