@@ -78,6 +78,7 @@ jobs:
       if: steps.changed_files.outputs.any_changed != 'true'
       run: |
         pwd
+        ls
         directories=$(find ${{ inputs.working_directory }} -mindepth 1 -maxdepth 1 -type d -print | tr '\n' ',' | sed 's/,$//')
         echo "directories=$directories" >> "$GITHUB_OUTPUT"
 
