@@ -57,17 +57,11 @@ jobs:
 
     - name: Remove 'apps/' Prefix
       id: remove_prefix
+      if: steps.changed_files.outputs.any_changed == 'true'
       env:
         PATHS: ${{ steps.extract_paths.outputs.paths }}
       run: |
         paths="$PATHS"
-
-        if [ -z "$paths" ]; then
-          directory=${{ inputs.working_directory }}
-          paths=$(ls -d "$directory"/** 2>/dev/null | tr '\n' '\n' | sed 's/,$//')
-          json_paths=$(echo "$paths" | jq -R -s -c 'split("\n")[:-1]')
-          paths=$json_paths
-        fi
 
         paths_array=$(echo "$paths" | jq -r '.[]')
 
@@ -79,11 +73,23 @@ jobs:
         json_paths_without_prefix=$(printf '%s\n' "${paths_without_prefix[@]}" | jq -R -s -c 'split("\n")[:-1]')
         echo "paths_without_prefix=$json_paths_without_prefix" >> "$GITHUB_OUTPUT"
 
+    - name: Check default directories if no changes
+      id: check_default_directories
+      if: steps.changed_files.outputs.any_changed != 'true'
+      run: |
+        directories=$(ls -d ${{ inputs.working_directory }}/*/ 2>/dev/null | tr '\n' ',' | sed 's/,$//')
+        echo "directories=$directories" >> "$GITHUB_OUTPUT"
+
     - id: setting_values
       name: Setting output values
       run: |
-        paths='${{ steps.extract_paths.outputs.paths }}'
-        paths_without_prefix='${{ steps.remove_prefix.outputs.paths_without_prefix }}'
+        if [[ "${{ steps.changed_files.outputs.any_changed }}" == 'true' ]]; then
+          paths='${{ steps.extract_paths.outputs.paths }}'
+          paths_without_prefix='${{ steps.remove_prefix.outputs.paths_without_prefix }}'
+        else
+          paths=$(echo "${{ steps.check_default_directories.outputs.directories }}" | jq -R -s -c 'split(",")')
+          paths_without_prefix=$(echo "${{ steps.check_default_directories.outputs.directories }}" | sed 's|${{ inputs.working_directory }}/||' | jq -R -s -c 'split(",")')
+        fi
 
         paths_json=$(echo "$paths" | jq -c '{ paths: . }')
         paths_without_prefix_json=$(echo "$paths_without_prefix" | jq -c '{ paths_without_prefix: . }')
