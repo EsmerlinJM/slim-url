@@ -77,7 +77,7 @@ jobs:
       id: check_default_directories
       if: steps.changed_files.outputs.any_changed != 'true'
       run: |
-        directories=$(ls -d ${{ inputs.working_directory }}/*/ 2>/dev/null | tr '\n' ',' | sed 's/,$//')
+        directories=$(find ${{ inputs.working_directory }} -mindepth 1 -maxdepth 1 -type d -print | tr '\n' ',' | sed 's/,$//')
         echo "directories=$directories" >> "$GITHUB_OUTPUT"
 
     - id: setting_values
