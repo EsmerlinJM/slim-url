@@ -24,7 +24,7 @@ jobs:
 
     outputs:
       paths: ${{ steps.setting_values.outputs.paths }}
-      paths_without_prefix: ${{ steps.setting_values.outputs.paths_without_prefix }}
+      paths_without_prefix: ${{ steps.setting_values.outputs.paths_without_prefix || '{"paths_without_prefix":["create-short-url","delete-url","redirect"]}' }}
 
     steps:
 
@@ -57,6 +57,7 @@ jobs:
 
     - name: Remove 'apps/' Prefix
       id: remove_prefix
+      if: steps.changed_files.outputs.any_changed  == 'true'
       env:
         PATHS: ${{ steps.extract_paths.outputs.paths }}
       run: |
@@ -78,6 +79,7 @@ jobs:
         echo "paths_without_prefix=$json_paths_without_prefix" >> "$GITHUB_OUTPUT"
 
     - id: setting_values
+      if: steps.changed_files.outputs.any_changed  == 'true'
       name: Setting output values
       run: |
         paths='${{ steps.extract_paths.outputs.paths }}'
@@ -90,6 +92,7 @@ jobs:
         echo "paths_without_prefix=$paths_without_prefix_json" >> "$GITHUB_OUTPUT"
 
     - name: Debug Output
+      if: steps.changed_files.outputs.any_changed  == 'true'
       run: |
         echo "${{ steps.setting_values.outputs.paths }}"
         echo "${{ steps.setting_values.outputs.paths_without_prefix }}"
