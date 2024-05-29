@@ -24,7 +24,7 @@ jobs:
 
     outputs:
       paths: ${{ steps.setting_values.outputs.paths }}
-      paths_without_prefix: ${{ steps.setting_values.outputs.paths_without_prefix || {"paths_without_prefix":["create-short-url","delete-url","redirect"]} }}
+      paths_without_prefix: ${{ steps.setting_values.outputs.paths_without_prefix || '{"paths_without_prefix":["create-short-url","delete-url","redirect"]}' }}
 
     steps:
 
