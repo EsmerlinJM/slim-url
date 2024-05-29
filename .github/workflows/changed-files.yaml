@@ -28,12 +28,13 @@ jobs:
 
     defaults:
       run:
+        shell: bash
         working-directory: ${{ inputs.working_directory }}/
 
     steps:
 
-    # - name: Install jq
-    #   run: sudo apt-get install -y jq
+    - name: Install jq
+      run: sudo apt-get install -y jq
 
     - name: Get changed files
       id: changed_files
@@ -76,12 +77,6 @@ jobs:
 
         json_paths_without_prefix=$(printf '%s\n' "${paths_without_prefix[@]}" | jq -R -s -c 'split("\n")[:-1]')
         echo "paths_without_prefix=$json_paths_without_prefix" >> "$GITHUB_OUTPUT"
-
-    - name: Print Working Directory
-      run: pwd
-
-    - name: List Files in Working Directory
-      run: ls -al
 
     - name: Check default directories if no changes
       id: check_default_directories
