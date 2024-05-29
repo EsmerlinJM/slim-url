@@ -34,7 +34,10 @@ jobs:
     steps:
 
     - name: Install jq
-      run: sudo apt-get install -y jq
+      run: |
+        wget -O jq https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-linux64
+        chmod +x ./jq
+        cp jq /usr/bin
 
     - name: Get changed files
       id: changed_files
