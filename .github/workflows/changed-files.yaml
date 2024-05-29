@@ -12,6 +12,7 @@ on:
       paths_without_prefix:
         description: "All paths extracted for working directories"
         value: ${{ jobs.get_changes.outputs.paths_without_prefix }}
+        default:
 
 permissions:
   id-token: write
@@ -57,15 +58,14 @@ jobs:
 
     - name: Remove 'apps/' Prefix
       id: remove_prefix
-      if: steps.changed_files.outputs.any_changed  == 'true'
       env:
         PATHS: ${{ steps.extract_paths.outputs.paths }}
       run: |
         paths="$PATHS"
 
         if [ -z "$paths" ]; then
-          echo "No paths found."
-          exit 1
+          path=${{ inputs.working_directory }}/**
+          paths=$(ls -d "$path"/*/ 2>/dev/null | tr '\n' '\n' | sed 's/,$//'
         fi
 
         paths_array=($(echo "$paths" | jq -r '.[]'))
@@ -79,7 +79,6 @@ jobs:
         echo "paths_without_prefix=$json_paths_without_prefix" >> "$GITHUB_OUTPUT"
 
     - id: setting_values
-      if: steps.changed_files.outputs.any_changed  == 'true'
       name: Setting output values
       run: |
         paths='${{ steps.extract_paths.outputs.paths }}'
