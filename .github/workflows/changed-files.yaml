@@ -91,6 +91,18 @@ jobs:
         echo "paths=$paths_json" >> "$GITHUB_OUTPUT"
         echo "paths_without_prefix=$paths_without_prefix_json" >> "$GITHUB_OUTPUT"
 
+    - id: get_default_paths
+      if: steps.changed_files.outputs.any_changed  == 'false'
+      name: Getting default output values
+      uses: actions/collect-directory-names-by-file-glob@v1.2
+      with:
+        file-glob: '**/*.ts'
+        search-directory: /${{ inputs.working_directory }}
+        unique: "true"
+
+    - name: Use and Setting Default Paths Names
+      run: echo "Directory Names are ${{ steps.get_default_paths.outputs.directory-names}}
+
     - name: Debug Output
       if: steps.changed_files.outputs.any_changed  == 'true'
       run: |
