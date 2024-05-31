@@ -94,7 +94,7 @@ jobs:
     - id: get_default_paths
       if: steps.changed_files.outputs.any_changed  == 'false'
       name: Getting default output values
-      uses: actions/collect-directory-names-by-file-glob@v1.1
+      uses: featherweight-design/collect-directory-names-by-file-glob@v1.2.2
       with:
         file-glob: '**/*.ts'
         search-directory: /${{ inputs.working_directory }}
